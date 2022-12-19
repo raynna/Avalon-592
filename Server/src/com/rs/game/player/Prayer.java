@@ -20,7 +20,7 @@ public class Prayer implements Serializable {
 
 	private final static int[][] prayerLvls = {
 			// normal prayer book
-			{ 1, 4, 7, 8, 9, 10, 13, 16, 19, 22, 25, 26, 27, 28, 31, 34, 35, 37, 40, 43, 44, 45, 46, 49, 52, 60, 65, 70, 74, 77 },
+			{ 1, 4, 7, 8, 9, 10, 13, 16, 19, 22, 25, 26, 27, 28, 31, 34, 35, 37, 40, 43, 44, 45, 46, 49, 52, 60, 70 },
 			// ancient prayer book
 			{ 50, 50, 52, 54, 56, 59, 62, 65, 68, 71, 74, 76, 78, 80, 82, 84, 86, 89, 92, 95 } };
 
@@ -28,14 +28,14 @@ public class Prayer implements Serializable {
 			{ 0, 5, 13 }, // Skin prayers 0
 			{ 1, 6, 14 }, // Strength prayers 1
 			{ 2, 7, 15 }, // Attack prayers 2
-			{ 3, 11, 20, 28 }, // Range prayers 3
-			{ 4, 12, 21, 29 }, // Magic prayers 4
+			{ 3, 11, 20 }, // Range prayers 3
+			{ 4, 12, 21 }, // Magic prayers 4
 			{ 8, 9, 26 }, // Restore prayers 5
 			{ 10 }, // Protect item prayers 6
 			{ 17, 18, 19 }, // Protect prayers 7
 			{ 16 }, // Other protect prayers 8
 			{ 22, 23, 24 }, // Other special prayers 9
-			{ 25, 27 } // Other prayers 10
+			{ 25, 26 }  // Other prayers 10
 			}, { // ancient prayer book
 					{ 0 }, // Protect item prayers 0
 					{ 1, 2, 3, 4 }, // sap prayers 1
@@ -46,7 +46,7 @@ public class Prayer implements Serializable {
 					{ 19 }, // other prayers
 			} };
 
-    private final static int[] prayerSlotValues = { 1, 2, 4, 262144, 524288, 8, 16, 32, 64, 128, 256, 1048576, 2097152, 512, 1024, 2048, 16777216, 4096, 8192, 16384, 4194304, 8388608, 32768, 65536, 131072, 33554432, 134217728, 67108864, 268435456 * 2, 268435456 };
+    private final static int[] prayerSlotValues = { 1, 2, 4, 262144, 524288, 8, 16, 32, 64, 128, 256, 1048576, 2097152, 512, 1024, 2048, 16777216, 4096, 8192, 16384, 4194304, 8388608, 32768, 65536, 131072, 33554432, 67108864 };
 
 	private final static double[][] prayerDrainRate = { { 1.2, 1.2, 1.2, 1.2, 1.2, 0.6, 0.6, 0.6, 3.6, 1.8, 1.8, 0.6, 0.6, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 1.2, 0.6, 0.18, 0.18, 0.24, 0.15, 0.2, 0.18 }, { 1.8, 0.24, 0.24, 0.24, 0.24, 1.8, 0.3, 0.3, 0.3, 0.3, 0.36, 0.36, 0.36, 0.36, 0.36, 0.36, 0.36, 1.2, 0.2, 0.2 } };
 
@@ -112,8 +112,6 @@ public class Prayer implements Serializable {
 			value += 0.10;
 		else if (usingPrayer(0, 21))
 			value += 0.15;
-		else if (usingPrayer(0, 29))
-			value += 0.20;
 		else if (usingPrayer(1, 3)) {
 			double d = (leechBonuses[2]);
 			value += d / 100;
@@ -136,8 +134,6 @@ public class Prayer implements Serializable {
 			value += 0.10;
 		else if (usingPrayer(0, 20))
 			value += 0.15;
-		else if (usingPrayer(0, 28))
-			value += 0.20;
 		else if (usingPrayer(1, 2)) {
 			double d = (leechBonuses[1]);
 			value += d / 100;
@@ -162,7 +158,7 @@ public class Prayer implements Serializable {
 			value += 0.15;
 		else if (usingPrayer(0, 25))
 			value += 0.15;
-		else if (usingPrayer(0, 27))
+		else if (usingPrayer(0, 26))
 			value += 0.20;
 		else if (usingPrayer(1, 1)) {
 			double d = (leechBonuses[0]);
@@ -191,7 +187,7 @@ public class Prayer implements Serializable {
 			value += 0.15;
 		else if (usingPrayer(0, 25))
 			value += 0.18;
-		else if (usingPrayer(0, 27))
+		else if (usingPrayer(0, 26))
 			value += 0.23;
 		else if (usingPrayer(1, 1)) {
 			double d = (leechBonuses[0]);
@@ -220,11 +216,7 @@ public class Prayer implements Serializable {
 			value += 0.15;
 		else if (usingPrayer(0, 25))
 			value += 0.20;
-		else if (usingPrayer(0, 27))
-			value += 0.25;
-		else if (usingPrayer(0, 28))
-			value += 0.25;
-		else if (usingPrayer(0, 29))
+		else if (usingPrayer(0, 26))
 			value += 0.25;
 		else if (usingPrayer(1, 1)) {
 			double d = (leechBonuses[0]);
@@ -298,6 +290,7 @@ public class Prayer implements Serializable {
 	}
 
 	public void closePrayers(int prayerId) {
+		System.out.println("closePrayers: " + prayerId);
 		if (ancientcurses) {
 			if (prayerId == 1) {
 				if (leechBonuses[0] > 0)
@@ -466,13 +459,14 @@ public class Prayer implements Serializable {
 	private boolean usePrayer(int prayerId) {
 		if (prayerId < 0 || prayerId >= prayerLvls[getPrayerBook()].length)
 			return false;
+		System.out.println("usePrayer: " + prayerId);
 		if (getPrayerBook() == 0) {
 			if (prayerId == 25) {
 				if (!player.getQuestManager().completedQuest(Quests.KINGS_RANSOM)) {
 					player.getSocialManager().sendGameMessage("You need a Prayer level of 60, a Defence level of 65 and have completed the King's Ransom quest's Knight Wave reward to use Chivalry.");
 					return false;
 				}
-			} else if (prayerId == 27) {
+			} else if (prayerId == 26) {
 				if (!player.getQuestManager().completedQuest(Quests.KINGS_RANSOM) || player.getSkills().getLevelForXp(Skills.DEFENCE) < 70) {
 					player.getSocialManager().sendGameMessage("You need a Prayer level of 70, a Defence level of 70 and have completed the King's Ransom quest's Knight Wave reward to use Piety.");
 					return false;
@@ -547,7 +541,6 @@ public class Prayer implements Serializable {
 				break;
 			case 8:
 			case 9:
-			case 26:
 				closePrayers(closePrayers[getPrayerBook()][5]);
 				break;
 			case 10:
@@ -569,10 +562,8 @@ public class Prayer implements Serializable {
 				closePrayers(closePrayers[getPrayerBook()][7], closePrayers[getPrayerBook()][8], closePrayers[getPrayerBook()][9]);
 				needAppearenceGenerate = true;
 				break;
-			case 25:
-			case 27:
-			case 28:
-			case 29:
+				case 25:
+			case 26:
 				closePrayers(closePrayers[getPrayerBook()][0], closePrayers[getPrayerBook()][1], closePrayers[getPrayerBook()][2], closePrayers[getPrayerBook()][3], closePrayers[getPrayerBook()][4], closePrayers[getPrayerBook()][10]);
 				break;
 			default:
@@ -759,13 +750,13 @@ public class Prayer implements Serializable {
 	}
 
 	public Prayer() {
-		quickPrayers = new boolean[][] { new boolean[30], new boolean[20] };
+		quickPrayers = new boolean[][] { new boolean[27], new boolean[20] };
 		prayerpoints = 1;
 	}
 
 	public void setPlayer(Player player) {
 		this.player = player;
-		onPrayers = new boolean[][] { new boolean[30], new boolean[20] };
+		onPrayers = new boolean[][] { new boolean[27], new boolean[20] };
 		nextDrain = new long[30];
 		leechBonuses = new int[11];
 	}
