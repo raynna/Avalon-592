@@ -1520,7 +1520,7 @@ public final class World {
 				//5+ step 46
 
 				player.getPackets().sendProjectile(receiver, shooter, receiver, gfxId, 43, 34,
-						distance >= 5 ? 46 : distance >= 3 ? 26 : distance == 2 ? 21 : 31, 56, 8,
+						distance >= 5 ? 46 : distance >= 3 ? 26 : distance == 2 ? 21 : 31, 56, 16,
 						receiver instanceof Player ? startOffsetDistance : startOffsetDistance, size);
 			}
 		}
