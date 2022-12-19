@@ -1,0 +1,41 @@
+function6(int local0,int local1,int local2,int local3,int local4,int local5,int local6,int local7,int local8,int local9,int local10,int local11,int local12,string local0,string local1,)
+
+function941(int local0,)
+	PopGlobalInt 988
+	PopGlobalInt 989
+	PopGlobalInt 990
+	PopGlobalInt 991
+	PushVarBit 6459
+	PushVarBit 6462
+	PushVarBit 6461
+	PushVarBit 6460
+	PushVarBit 6463
+	PushVarBit 6464
+	PushVarBit 6465
+	PushVarBit 6466
+	PushVarBit 6467
+
+function1117(int local0,)
+	PushVarBit 6459
+	PushVarBit 6462
+	PushVarBit 6461
+	PushVarBit 6460
+	PushVarBit 6463
+	PushVarBit 6464
+	PushVarBit 6465
+	PushVarBit 6466
+	PushVarBit 6467
+
+function1121()
+	PushVarBit 276
+	PushVarBit 357
+	PushVarBit 275
+
+function1126(int local0,)
+	PopGlobalInt 993
+	PushVarBit 2668
+	PushVarBit 2668
+	PushVarBit 2668
+
+function1127(int local0,)
+

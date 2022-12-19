@@ -1,0 +1,72 @@
+function1246(int local0,)
+
+function2731()
+
+function2733()
+	PushVarBit 6501
+	PushGlobalInt 1020
+	PushGlobalInt 1020
+	PopGlobalInt 1020
+	PushGlobalInt 1020
+	PopGlobalInt 1020
+	PushGlobalInt 1020
+	PopGlobalInt 1020
+	PushGlobalInt 1020
+	PopGlobalInt 1020
+	PushGlobalInt 1020
+	PopGlobalInt 1020
+	PushGlobalInt 1020
+	PopGlobalInt 1020
+	PushGlobalInt 1020
+	PopGlobalInt 1020
+	PushGlobalInt 1020
+	PopGlobalInt 1020
+
+function2736(int local0,int local1,int local2,int local3,int local4,)
+	PopGlobalInt 1020
+
+function2738()
+	PushGlobalInt 1020
+
+function2739(int local0,)
+	PushGlobalInt 1020
+	PushGlobalInt 1019
+	PushGlobalInt 1008
+	PushGlobalInt 1015
+	PushGlobalInt 1009
+	PushGlobalInt 1010
+	PushGlobalInt 1016
+	PushGlobalInt 1011
+	PushGlobalInt 1012
+	PushGlobalInt 1013
+	PushGlobalInt 1017
+	PushGlobalInt 1014
+	PushGlobalInt 1018
+	PushGlobalInt 1020
+	PushGlobalInt 1020
+	PushGlobalInt 1020
+
+function2740(int local0,int local1,int local2,)
+	PushGlobalInt 1020
+	PushGlobalInt 1020
+	PushGlobalInt 1020
+
+function2741(int local0,int local1,)
+
+function2742()
+
+function2743(int local0,int local1,int local2,int local3,int local4,int local5,)
+	PushGlobalInt 1020
+
+function2744(int local0,int local1,int local2,int local3,)
+	PushGlobalInt 1020
+
+function2745(int local0,int local1,int local2,int local3,int local4,int local5,int local6,)
+	PushGlobalInt 1020
+
+function2749(int local0,int local1,int local2,)
+
+function2750(int local0,int local1,int local2,int local3,)
+
+function2751(int local0,int local1,int local2,)
+
