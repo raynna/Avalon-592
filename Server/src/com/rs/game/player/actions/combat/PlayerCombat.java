@@ -695,7 +695,7 @@ public class PlayerCombat extends Action {
             D = Math.round(defence);
         }
         double prob = A / D;
-        double random = Utils.getRandomDouble(100);
+        double random = Utils.getRandomDouble(99);
         if (A <= D) {
             prob = (A - 1) / (D * 2);
         } else if (A > D) {
@@ -2345,7 +2345,7 @@ public class PlayerCombat extends Action {
                 }
             }
             double prob;
-            double random = Utils.getRandomDouble(100);
+            double random = Utils.getRandomDouble(99);
             if (ranging) {
                 prob = R / RD;
                 if (R < RD) {
