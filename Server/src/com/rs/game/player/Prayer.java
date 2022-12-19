@@ -514,114 +514,122 @@ public class Prayer implements Serializable {
 		boolean needAppearenceGenerate = false;
 		if (getPrayerBook() == 0) {
 			switch (prayerId) {
-			case 0:
-			case 5:
-			case 13:
-				closePrayers(closePrayers[getPrayerBook()][0], closePrayers[getPrayerBook()][10]);
-				break;
-			case 1:
-			case 6:
-			case 14:
-				closePrayers(closePrayers[getPrayerBook()][1], closePrayers[getPrayerBook()][3], closePrayers[getPrayerBook()][4], closePrayers[getPrayerBook()][10]);
-				break;
-			case 2:
-			case 7:
-			case 15:
-				closePrayers(closePrayers[getPrayerBook()][2], closePrayers[getPrayerBook()][3], closePrayers[getPrayerBook()][4], closePrayers[getPrayerBook()][10]);
-				break;
-			case 3:
-			case 11:
-			case 20:
-				closePrayers(closePrayers[getPrayerBook()][1], closePrayers[getPrayerBook()][2], closePrayers[getPrayerBook()][3], closePrayers[getPrayerBook()][10]);
-				break;
-			case 4:
-			case 12:
-			case 21:
-				closePrayers(closePrayers[getPrayerBook()][1], closePrayers[getPrayerBook()][2], closePrayers[getPrayerBook()][4], closePrayers[getPrayerBook()][10]);
-				break;
-			case 8:
-			case 9:
-				closePrayers(closePrayers[getPrayerBook()][5]);
-				break;
-			case 10:
-				closePrayers(closePrayers[getPrayerBook()][6]);
-				break;
-			case 17:
-			case 18:
-			case 19:
-				closePrayers(closePrayers[getPrayerBook()][7], closePrayers[getPrayerBook()][9]);
-				needAppearenceGenerate = true;
-				break;
-			case 16:
-				closePrayers(closePrayers[getPrayerBook()][8], closePrayers[getPrayerBook()][9]);
-				needAppearenceGenerate = true;
-				break;
-			case 22:
-			case 23:
-			case 24:
-				closePrayers(closePrayers[getPrayerBook()][7], closePrayers[getPrayerBook()][8], closePrayers[getPrayerBook()][9]);
-				needAppearenceGenerate = true;
-				break;
+				case 0:
+				case 5:
+				case 13:
+					closePrayers(closePrayers[getPrayerBook()][0], closePrayers[getPrayerBook()][10]);
+					closePrayers(28);
+					closePrayers(29);
+					break;
+				case 1:
+				case 6:
+				case 14:
+					closePrayers(closePrayers[getPrayerBook()][1], closePrayers[getPrayerBook()][3],
+							closePrayers[getPrayerBook()][4], closePrayers[getPrayerBook()][10]);
+					break;
+				case 2:
+				case 7:
+				case 15:
+					closePrayers(closePrayers[getPrayerBook()][2], closePrayers[getPrayerBook()][3],
+							closePrayers[getPrayerBook()][4], closePrayers[getPrayerBook()][10]);
+					break;
+				case 3:
+				case 11:
+				case 20:
+				case 4:
+				case 12:
+				case 21:
+					closePrayers(closePrayers[getPrayerBook()][1], closePrayers[getPrayerBook()][2],
+							closePrayers[getPrayerBook()][3], closePrayers[getPrayerBook()][4],
+							closePrayers[getPrayerBook()][10]);
+					break;
+				case 8:
+				case 9:
+					closePrayers(closePrayers[getPrayerBook()][5]);
+					break;
+				case 10:
+					closePrayers(closePrayers[getPrayerBook()][6]);
+					break;
+				case 17:
+				case 18:
+				case 19:
+					closePrayers(closePrayers[getPrayerBook()][7], closePrayers[getPrayerBook()][9]);
+					needAppearenceGenerate = true;
+					break;
+				case 16:
+					closePrayers(closePrayers[getPrayerBook()][8], closePrayers[getPrayerBook()][9]);
+					needAppearenceGenerate = true;
+					break;
+				case 22:
+				case 23:
+				case 24:
+					closePrayers(closePrayers[getPrayerBook()][7], closePrayers[getPrayerBook()][8],
+							closePrayers[getPrayerBook()][9]);
+					needAppearenceGenerate = true;
+					break;
 				case 25:
-			case 26:
-				closePrayers(closePrayers[getPrayerBook()][0], closePrayers[getPrayerBook()][1], closePrayers[getPrayerBook()][2], closePrayers[getPrayerBook()][3], closePrayers[getPrayerBook()][4], closePrayers[getPrayerBook()][10]);
-				break;
-			default:
-				return false;
+				case 26:
+					closePrayers(closePrayers[getPrayerBook()][0], closePrayers[getPrayerBook()][1],
+							closePrayers[getPrayerBook()][2], closePrayers[getPrayerBook()][3],
+							closePrayers[getPrayerBook()][4], closePrayers[getPrayerBook()][10]);
+					break;
+				default:
+					return false;
 			}
 		} else {
 			switch (prayerId) {
-			case 0:
-				if (!usingQuickPrayer) {
-					player.setNextAnimation(new Animation(12567));
-					player.setNextGraphics(new Graphics(2213));
-				}
-				closePrayers(closePrayers[getPrayerBook()][0]);
-				break;
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-				closePrayers(closePrayers[getPrayerBook()][5], closePrayers[getPrayerBook()][6]);
-				break;
-			case 5:
-				if (!usingQuickPrayer) {
-					player.setNextAnimation(new Animation(12589));
-					player.setNextGraphics(new Graphics(2266));
-				}
-				closePrayers(closePrayers[getPrayerBook()][2]);
-				break;
-			case 7:
-			case 8:
-			case 9:
-			case 17:
-			case 18:
-				closePrayers(closePrayers[getPrayerBook()][3]);
-				needAppearenceGenerate = true;
-				break;
-			case 6:
-				closePrayers(closePrayers[getPrayerBook()][4]);
-				needAppearenceGenerate = true;
-				break;
-			case 10:
-			case 11:
-			case 12:
-			case 13:
-			case 14:
-			case 15:
-			case 16:
-				closePrayers(closePrayers[getPrayerBook()][1], closePrayers[getPrayerBook()][6]);
-				break;
-			case 19:
-				// stop changing this idiot. it doesnt stop walk on rs
-				if (!usingQuickPrayer) {
-					player.setNextAnimation(new Animation(12565));
-					player.setNextGraphics(new Graphics(2226));
-				}
-				closePrayers(closePrayers[getPrayerBook()][1], closePrayers[getPrayerBook()][5], closePrayers[getPrayerBook()][6]);
-				break;
-			default:
-				return false;
+				case 0:
+					if (!usingQuickPrayer) {
+						player.animate(new Animation(12567));
+						player.gfx(new Graphics(2213));
+					}
+					closePrayers(closePrayers[getPrayerBook()][0]);
+					break;
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+					closePrayers(closePrayers[getPrayerBook()][5], closePrayers[getPrayerBook()][6]);
+					break;
+				case 5:
+					if (!usingQuickPrayer) {
+						player.animate(new Animation(12589));
+						player.gfx(new Graphics(2266));
+					}
+					closePrayers(closePrayers[getPrayerBook()][2]);
+					break;
+				case 7:
+				case 8:
+				case 9:
+				case 17:
+				case 18:
+					closePrayers(closePrayers[getPrayerBook()][3]);
+					needAppearenceGenerate = true;
+					break;
+				case 6:
+					closePrayers(closePrayers[getPrayerBook()][4]);
+					needAppearenceGenerate = true;
+					break;
+				case 10:
+				case 11:
+				case 12:
+				case 13:
+				case 14:
+				case 15:
+				case 16:
+					closePrayers(closePrayers[getPrayerBook()][1], closePrayers[getPrayerBook()][6]);
+					break;
+				case 19:
+					// stop changing this idiot. it doesnt stop walk on rs
+					if (!usingQuickPrayer) {
+						player.animate(new Animation(12565));
+						player.gfx(new Graphics(2226));
+					}
+					closePrayers(closePrayers[getPrayerBook()][1], closePrayers[getPrayerBook()][5],
+							closePrayers[getPrayerBook()][6]);
+					break;
+				default:
+					return false;
 			}
 		}
 		if (!usingQuickPrayer) {
@@ -633,9 +641,10 @@ public class Prayer implements Serializable {
 		} else {
 			quickPrayers[getPrayerBook()][prayerId] = true;
 		}
-		player.getPackets().sendSound(2675, 0, 1);
+		player.getPackets().sendSound(2662, 0, 1);
 		return true;
 	}
+
 
 	public void processPrayer() {
 		if (!hasPrayersOn())
