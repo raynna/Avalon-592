@@ -455,7 +455,6 @@ public class PlayerCombat extends Action {
             if (spell.getStartGfx() != null)
                 player.gfx(spell.getStartGfx());
             player.animate(new Animation(spell.getAnimation() != -1 ? spell.getAnimation() : 1162));
-            System.out.println("Animation: " + spell.getAnimation());
             if (spell == ModernCombatSpellsStore.STORM_OF_ARMADYL)
                 World.sendSOAProjectile(player, target, spell.getProjectileId());
             else {

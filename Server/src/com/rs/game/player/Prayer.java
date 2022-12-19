@@ -290,7 +290,6 @@ public class Prayer implements Serializable {
 	}
 
 	public void closePrayers(int prayerId) {
-		System.out.println("closePrayers: " + prayerId);
 		if (ancientcurses) {
 			if (prayerId == 1) {
 				if (leechBonuses[0] > 0)
@@ -459,7 +458,6 @@ public class Prayer implements Serializable {
 	private boolean usePrayer(int prayerId) {
 		if (prayerId < 0 || prayerId >= prayerLvls[getPrayerBook()].length)
 			return false;
-		System.out.println("usePrayer: " + prayerId);
 		if (getPrayerBook() == 0) {
 			if (prayerId == 25) {
 				if (!player.getQuestManager().completedQuest(Quests.KINGS_RANSOM)) {
