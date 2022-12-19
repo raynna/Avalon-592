@@ -1070,7 +1070,7 @@ public class Magic {
 		}
 		if (!checkRunes(player, false, dung, runes))
 			return false;
-		final WorldTile checkTile = tile == null ? player.getHouse().getPortal() : tile;
+		final WorldTile checkTile = tile;
 		if (teleType == MAGIC_TELEPORT) {
 			if (!player.getControlerManager().processMagicTeleport(checkTile))
 				return false;
@@ -1125,9 +1125,7 @@ public class Magic {
 								new WorldTile(teleTile.getX(), teleTile.getY() - 1, teleTile.getPlane()));
 						player.setDirection(6);
 					}
-					if (tile == null && !player.getHouse().isArriveInPortal())
-						player.getHouse().enterMyHouse();
-					else if (player.getControlerManager().getControler() == null)
+					if (player.getControlerManager().getControler() == null)
 						teleControlersCheck(player, teleTile);
 					removeDamage = true;
 				} else {

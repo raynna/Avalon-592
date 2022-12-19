@@ -7,8 +7,6 @@ import com.rs.cache.loaders.ObjectDefinitions;
 import com.rs.game.Animation;
 import com.rs.game.ForceMovement;
 import com.rs.game.ForceTalk;
-import com.rs.game.Hit;
-import com.rs.game.Hit.HitLook;
 import com.rs.game.NewForceMovement;
 import com.rs.game.World;
 import com.rs.game.WorldObject;
@@ -16,65 +14,25 @@ import com.rs.game.WorldTile;
 import com.rs.game.item.Item;
 import com.rs.game.minigames.CastleWars;
 import com.rs.game.minigames.FightPits;
-import com.rs.game.minigames.PuroPuro;
 import com.rs.game.minigames.WarriorsGuild;
 import com.rs.game.minigames.pest.Lander;
 import com.rs.game.npc.NPC;
-import com.rs.game.npc.others.TreeSpirit;
-import com.rs.game.player.Equipment;
 import com.rs.game.player.OwnedObjectManager;
 import com.rs.game.player.Player;
 import com.rs.game.player.QuestManager.Quests;
 import com.rs.game.player.RouteEvent;
 import com.rs.game.player.Skills;
-import com.rs.game.player.actions.BoxAction.HunterEquipment;
-import com.rs.game.player.actions.BoxAction.HunterNPC;
-import com.rs.game.player.actions.Cooking;
-import com.rs.game.player.actions.Cooking.Cookables;
-import com.rs.game.player.actions.CowMilkingAction;
-import com.rs.game.player.actions.Smelting.SmeltingBar;
-import com.rs.game.player.actions.Smithing.ForgingBar;
-import com.rs.game.player.actions.Smithing.ForgingInterface;
-import com.rs.game.player.actions.WaterFilling;
-import com.rs.game.player.actions.Woodcutting;
-import com.rs.game.player.actions.Woodcutting.HatchetDefinitions;
-import com.rs.game.player.actions.Woodcutting.TreeDefinitions;
+import com.rs.game.player.actions.combat.Magic;
 import com.rs.game.player.actions.combat.PlayerCombat;
-import com.rs.game.player.actions.mining.EssenceMining;
-import com.rs.game.player.actions.mining.EssenceMining.EssenceDefinitions;
-import com.rs.game.player.actions.mining.JemMining;
-import com.rs.game.player.actions.mining.Mining;
-import com.rs.game.player.actions.mining.Mining.RockDefinitions;
-import com.rs.game.player.actions.mining.MiningBase;
-import com.rs.game.player.actions.runecrafting.SiphionActionNodes;
-import com.rs.game.player.actions.thieving.Thieving;
-import com.rs.game.player.content.AbbysObsticals;
-import com.rs.game.player.content.Canoes;
 import com.rs.game.player.content.CrystalChest;
-import com.rs.game.player.content.DragonfireShieldCreating;
 import com.rs.game.player.content.DwarfMultiCannon;
 import com.rs.game.player.content.FairyRings;
-import com.rs.game.player.content.GodswordCreating;
-import com.rs.game.player.content.Hunter;
-import com.rs.game.player.content.JewllerySmithing;
-import com.rs.game.player.content.Magic;
 import com.rs.game.player.content.PartyRoom;
-import com.rs.game.player.content.Runecrafting;
 import com.rs.game.player.content.SpiritTree;
-import com.rs.game.player.content.SpiritshieldCreating;
 import com.rs.game.player.content.Summoning;
 import com.rs.game.player.content.WildernessObelisk;
-import com.rs.game.player.content.agility.Agility;
-import com.rs.game.player.content.agility.BarbarianOutpostAgility;
-import com.rs.game.player.content.agility.GnomeAgility;
-import com.rs.game.player.content.agility.WildernessAgility;
-import com.rs.game.player.controllers.Falconry;
-import com.rs.game.player.controllers.FightCaves;
-import com.rs.game.player.controllers.GodWars;
-import com.rs.game.player.controllers.NomadsRequiem;
 import com.rs.game.player.controllers.Wilderness;
 import com.rs.game.player.dialogues.impl.MiningGuildDwarf;
-import com.rs.game.player.dialogues.impl.SqirkFruitSqueeze;
 import com.rs.game.tasks.WorldTask;
 import com.rs.game.tasks.WorldTasksManager;
 import com.rs.io.InputStream;
@@ -151,71 +109,8 @@ public final class ObjectHandler {
 			}, true));
 			return;
 		}
-		if (id == 43529 || id == 69514 || (id >= 4550 && id <= 4559)) {
-			player.setRouteEvent(new RouteEvent(object, new Runnable() {
-				@Override
-				public void run() {
-					// unreachable agility objects exception
-					player.faceObject(object);
-					if (id == 43529) {
-						GnomeAgility.preSwing(player, object);
-					} else if (id == 69514) {
-						GnomeAgility.runGnomeBoard(player, object);
-					} else if (id >= 4550 && id <= 4559) {
-						if (!Agility.hasLevel(player, 35))
-							return;
-						if (object.withinDistance(player, 2)) {
-							if (!Agility.hasLevel(player, 35))
-								return;
-							player.setNextForceMovement(new NewForceMovement(player, 1, object, 2, Utils.getFaceDirection(object.getX() - player.getX(), object.getY() - player.getY())));
-							player.useStairs(-1, object, 1, 2);
-							player.setNextAnimation(new Animation(769));
-							player.getSkills().addXp(Skills.AGILITY, 2);
-						}
-					}
-				}
-			}, true));
-			return;
-		}
 
-		if (SiphionActionNodes.siphion(player, object))
-			return;
-		if (id == 75463) {
-			if (object.withinDistance(player, 7)) {
-				final boolean withinArmadyl = GodWars.inArmadylPrepare(player);
-				final WorldTile tile = new WorldTile(2872, withinArmadyl ? 5280 : 5272, 0);
-				WorldTasksManager.schedule(new WorldTask() {
-
-					int ticks = 0;
-
-					@Override
-					public void run() {
-						ticks++;
-						if (ticks == 1) {
-							player.setNextAnimation(new Animation(827));
-							player.setNextFaceWorldTile(tile);
-							player.lock();
-						} else if (ticks == 3)
-							player.setNextAnimation(new Animation(385));
-						else if (ticks == 5) {
-							player.setNextAnimation(new Animation(16635));
-						} else if (ticks == 6) {
-							player.getAppearence().setHidden(true);
-							World.sendProjectile(player, tile, 2699, 18, 18, 20, 50, 175, 0);
-							player.setNextForceMovement(new ForceMovement(player, 1, tile, 6, withinArmadyl ? ForceMovement.NORTH : ForceMovement.SOUTH));
-						} else if (ticks == 9) {
-							player.getAppearence().setHidden(false);
-							player.setNextAnimation(new Animation(16672));
-							player.setNextWorldTile(tile);
-							player.unlock();
-							stop();
-							return;
-						}
-					}
-				}, 0, 1);
-			}
-			return;
-		} else if (object.getId() == 5949) {
+		if (object.getId() == 5949) {
 			final boolean isSouth = player.getY() > 9553;
 			player.getSocialManager().sendGameMessage("You leap across with a mighty leap!");
 			WorldTasksManager.schedule(new WorldTask() {
@@ -252,34 +147,7 @@ public final class ObjectHandler {
 					return;
 				if (CastleWars.handleObjects(player, id))
 					return;
-				if (player.getFarmingManager().isFarming(id, null, 1))
-					return;
-				if (object.getId() == 19205)
-					Hunter.createLoggedObject(player, object, true);
-				HunterNPC hunterNpc = HunterNPC.forObjectId(id);
-				if (hunterNpc != null) {
-					if (OwnedObjectManager.removeObject(player, object)) {
-						player.setNextAnimation(hunterNpc.getEquipment().getPickUpAnimation());
-						for (Item item : hunterNpc.getItems())
-							player.getInventory().addItem(item);
-						player.getInventory().addItem(hunterNpc.getEquipment().getId(), 1);
-						player.getSkills().addXp(Skills.HUNTER, hunterNpc.getXp());
-					} else {
-						player.getSocialManager().sendGameMessage("This isn't your trap.");
-					}
-				} else if (id == HunterEquipment.BOX.getObjectId() || id == 19192) {
-					if (OwnedObjectManager.removeObject(player, object)) {
-						player.setNextAnimation(new Animation(5208));
-						player.getInventory().addItem(HunterEquipment.BOX.getId(), 1);
-					} else
-						player.getSocialManager().sendGameMessage("This isn't your trap.");
-				} else if (id == HunterEquipment.BRID_SNARE.getObjectId() || id == 19174) {
-					if (OwnedObjectManager.removeObject(player, object)) {
-						player.setNextAnimation(new Animation(5207));
-						player.getInventory().addItem(HunterEquipment.BRID_SNARE.getId(), 1);
-					} else
-						player.getSocialManager().sendGameMessage("This isn't your trap.");
-				} else if (id == 77461) {
+				if (id == 77461) {
 					player.getSocialManager().sendGameMessage("Looks like you need special gloves to make this jump.");
 					return;
 				} else if (id == 2350 && (object.getX() == 3352 && object.getY() == 3417 && object.getPlane() == 0))
@@ -312,12 +180,6 @@ public final class ObjectHandler {
 						}, 9, 9);
 					}
 					player.getVarsManager().sendVarBit(10232, value + 1);
-				} else if (id == 12290 || id == 12272) {
-					if (id == 12290)
-						player.setFavorPoints(1 - player.getFavorPoints());
-					player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.STRAIT_VINE));// start
-																												// of
-																												// jadinkos
 				} else if (id == 12328) {
 					player.useStairs(3527, new WorldTile(3012, 9275, 0), 5, 6);
 					player.setNextForceMovement(new ForceMovement(player, 3, object, 2, ForceMovement.WEST));
@@ -334,16 +196,7 @@ public final class ObjectHandler {
 					System.out.println("OK2");
 					if (objectDef.containsOption(0, "Infuse-pouch"))
 						Summoning.openInfusionInterface(player);
-				} else if (id == 12277)
-					player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.STRAIT_VINE_COLLECTABLE));// start
-																															// of
-																															// jadinkos
-				else if (id == 12291)
-					player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.MUTATED_VINE));
-				else if (id == 12274)
-					player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.CURLY_VINE));
-				else if (id == 12279)
-					player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.CURLY_VINE_COLLECTABLE));
+				}
 				else if (id == 26684 || id == 26685 || id == 26686) // poison
 																	// waste
 																	// cave
@@ -660,71 +513,7 @@ public final class ObjectHandler {
 					}
 				}
 				// start of death platue
-				else if (id == 34877 || id == 34878 || id == 9303 || id == 9304 || id == 9305 || id == 9306) {
-					if (!Agility.hasLevel(player, 61))
-						return;
-					WorldTasksManager.schedule(new WorldTask() {
-
-						@Override
-						public void run() {
-							boolean isGoingDown = id == 34877 ? player.getY() >= 3620 : id == 34878 ? player.getY() >= 9587 : id == 9303 ? player.getX() >= 2856 : id == 9306 ? player.getX() <= 2909 : id == 9305 ? player.getX() <= 2894 : player.getY() >= 3662;
-							if (isGoingDown)
-								player.useStairs(3382, id == 34877 ? new WorldTile(2877, 3618, 0) : id == 34878 ? new WorldTile(2875, 3594, 0) : id == 9303 ? new WorldTile(2854, 3664, 0) : id == 9306 ? new WorldTile(2912, 3687, 0) : id == 9305 ? new WorldTile(2897, 3674, 0) : new WorldTile(2875, 3659, 0), 6, 7, null, true);
-							else
-								player.useStairs(3381, id == 34877 ? new WorldTile(2876, 3622, 0) : id == 34878 ? new WorldTile(2875, 3598, 0) : id == 9303 ? new WorldTile(2858, 3664, 0) : id == 9306 ? new WorldTile(2908, 3686, 0) : id == 9305 ? new WorldTile(2893, 3673, 0) : new WorldTile(2874, 3663, 0), 6, 7, null, true);
-						}
-					}, 1);
-				} else if (id == 3803) {
-					if (!Agility.hasLevel(player, 64))
-						return;
-					WorldTasksManager.schedule(new WorldTask() {
-
-						@Override
-						public void run() {
-							boolean isGoingDown = player.getX() >= 2877;
-							if (isGoingDown)
-								player.useStairs(15239, new WorldTile(2875, 3672, 0), 4, 5, null, true);
-							else
-								player.useStairs(3378, new WorldTile(2879, 3673, 0), 4, 5, null, true);
-						}
-					}, 1);
-				} else if (id == 3748 || id == 5847) {
-					if (!Agility.hasLevel(player, 41))
-						return;
-					WorldTasksManager.schedule(new WorldTask() {
-
-						@Override
-						public void run() {
-							boolean isFailed = Utils.getRandom(3) == 0;
-							if (isFailed) {
-								player.applyHit(new Hit(player, Utils.random(20, 50), HitLook.REGULAR_DAMAGE));
-								player.getSocialManager().sendGameMessage("You skid your knee across the rocks.");
-							}
-							boolean isTravelingEast = id == 5847 ? player.getX() >= 2760 : (x == 2817 && y == 3630) && player.getX() >= 2817;
-							boolean isTravelingNorth = isTravelingEast ? false : (x == 2846 && y == 3620) ? player.getY() >= 3620 : player.getY() >= 3675;
-
-							if (x == 2846 && y == 3620) {
-								if (player.getEquipment().getBootsId() != 3105 && player.getEquipment().getBootsId() != 6145) {
-									player.getDialogueManager().startDialogue("SimpleMessage", "You need rock climbing boots in order to jump this ledge.");
-									return;
-								}
-							}
-							player.useStairs(3377, new WorldTile(isTravelingNorth ? player.getX() : (isTravelingEast ? -1 : 1) + x, (isTravelingEast || (x == 2817 && y == 3630) || id == 5847 ? 0 : (isTravelingNorth ? -2 : 2)) + player.getY(), 0), 4, 5, null, true);
-						}
-					});
-				} else if (id == 35391) {
-					if (!Agility.hasLevel(player, 41))
-						return;
-					player.addWalkSteps(x, y);
-					WorldTasksManager.schedule(new WorldTask() {
-
-						@Override
-						public void run() {
-							boolean isTravelingWest = (x == 2834 && y == 3626) ? player.getX() >= 2834 : player.getX() >= 2900;
-							player.useStairs(3303, new WorldTile((isTravelingWest ? -2 : 2) + player.getX(), player.getY(), 0), 4, 5, null, true);
-						}
-					});
-				} else if (id == 34839 || id == 34836) {
+				else if (id == 34839 || id == 34836) {
 					boolean firstDoor = x == 2912;
 					boolean withinArea = firstDoor ? player.getX() > 2912 : player.getY() < 3619;
 					WorldObject opened = new WorldObject(object.getId(), object.getType(), object.getRotation() - 1, object.getX(), object.getY(), object.getPlane());
@@ -745,10 +534,7 @@ public final class ObjectHandler {
 						player.useStairs(-1, new WorldTile(2907, 10035, 0), 1, 2);
 					else if (x == 2796 && y == 3614)
 						player.useStairs(-1, new WorldTile(2808, 10002, 0), 1, 2);
-				} else if (id == 35390)
-					GodWars.passGiantBoulder(player, object, true);
-				// shanty pass
-				else if (id == 76651 || id == 76652)
+				} else if (id == 76651 || id == 76652)
 					player.getDialogueManager().startDialogue("ShantyPassDangerSignD");
 				else if (id == 12774) {
 					player.lock(3);
@@ -786,65 +572,12 @@ public final class ObjectHandler {
 						return;
 					}
 					player.useStairs(-1, new WorldTile(2146, 5287, 0), 0, 1);
-				} else if (id == 7143 || id == 7153)
-					AbbysObsticals.clearRocks(player, object);
-				else if (id == 7152 || id == 7144)
-					AbbysObsticals.clearTendrills(player, object, new WorldTile(id == 7144 ? 3028 : 3051, 4824, 0));
-				else if (id == 7150 || id == 7146)
-					AbbysObsticals.clearEyes(player, object, new WorldTile(object.getX() == 3021 ? 3028 : 3050, 4839, 0));
-				else if (id == 7147)
-					AbbysObsticals.clearGap(player, object, new WorldTile(3030, 4843, 0), false);
-				else if (id == 7148)
-					AbbysObsticals.clearGap(player, object, new WorldTile(3040, 4845, 0), true);
-				else if (id == 7149)
-					AbbysObsticals.clearGap(player, object, new WorldTile(3048, 4842, 0), false);
-				else if (id == 7151)
-					AbbysObsticals.burnGout(player, object, new WorldTile(3053, 4831, 0));
-				else if (id == 7145)
-					AbbysObsticals.burnGout(player, object, new WorldTile(3024, 4834, 0));
-				else if (id == 7137)
-					Runecrafting.enterWaterAltar(player);
-				else if (id == 7139)
-					Runecrafting.enterAirAltar(player);
-				else if (id == 7140)
-					Runecrafting.enterMindAltar(player);
-				else if (id == 7131)
-					Runecrafting.enterBodyAltar(player);
-				else if (id == 7130)
-					Runecrafting.enterEarthAltar(player);
-				else if (id == 7129)
-					Runecrafting.enterFireAltar(player);
-				else if (id == 7133)
-					Runecrafting.enterNatureAltar(player);
-				else if (id == 7132)
-					Runecrafting.enterCosmicAltar(player);
-				else if (id == 7141)
-					Runecrafting.enterBloodAltar(player);
-				else if (id == 7134)
-					Runecrafting.enterChoasAltar(player);
-				else if (id == 7138)
+				} else if (id == 7138)
 					player.getSocialManager().sendGameMessage("A strange power blocks your exit..");
 				else if (id == 26341) {
 					player.useStairs(827, new WorldTile(2882, 5311, 0), 2, 1, "You climb down the rope...");
 					player.getControlerManager().startControler("GodWars");
-				} else if (id == 7135) {
-					boolean hasEquip = false;
-					for (Item item : player.getInventory().getItems().getItems()) {
-						if (item == null)
-							continue;
-						if (Equipment.getItemSlot(item.getId()) != -1) {
-							hasEquip = true;
-							break;
-						}
-					}
-					if (player.getEquipment().wearingArmour() || hasEquip) {
-						player.getSocialManager().sendGameMessage("The monk notices that you tried to fool him. Deposit your armor near the deposite box to travel to Entrana.");
-						return;
-					}
-					Runecrafting.enterLawAltar(player);
-				} else if (id == 7136)
-					Runecrafting.enterDeathAltar(player);
-				else if (id == 2469)
+				} else if (id == 2469)
 					player.useStairs(-1, new WorldTile(3315, 3253, 0), 1, 2);
 				else if (id == 2468)// leaving earth
 					player.useStairs(-1, new WorldTile(3308, 3476, 0), 1, 2);
@@ -1051,15 +784,7 @@ public final class ObjectHandler {
 				else if (id == 15767)
 					player.getDialogueManager().startDialogue("CaveyDavey");
 				// slayer tower
-				else if (id == 9319) {
-					if (!Agility.hasLevel(player, x == 3422 && y == 3550 ? 61 : 71))
-						return;
-					player.useStairs(828, new WorldTile(player.getX(), player.getY(), player.getPlane() + 1), 1, 2);
-				} else if (id == 9320) {
-					if (!Agility.hasLevel(player, 61))
-						return;
-					player.useStairs(827, new WorldTile(player.getX(), player.getY(), player.getPlane() - 1), 1, 2);
-				} else if (object.getId() == 15791) {
+				else if (object.getId() == 15791) {
 					if (object.getX() == 3829)
 						player.useStairs(-1, new WorldTile(3830, 9461, 0), 1, 2);
 					if (object.getX() == 3814)
@@ -1121,85 +846,6 @@ public final class ObjectHandler {
 							}
 						}
 					}, 0, 0);
-				} else if (id == 44339) {
-					if (!Agility.hasLevel(player, 81))
-						return;
-					boolean isEast = player.getX() > 2772;
-					final WorldTile tile = new WorldTile(isEast ? 2768 : 2775, 10002, 0);
-					WorldTasksManager.schedule(new WorldTask() {
-
-						int ticks = -1;
-
-						@Override
-						public void run() {
-							ticks++;
-							if (ticks == 0)
-								player.setNextFaceWorldTile(object);
-							else if (ticks == 1) {
-								player.setNextAnimation(new Animation(10738));
-								player.setNextForceMovement(new NewForceMovement(player, 0, tile, 5, Utils.getFaceDirection(object.getX() - player.getX(), object.getY() - player.getY())));
-							} else if (ticks == 3)
-								player.setNextWorldTile(tile);
-							else if (ticks == 4) {
-								player.getSocialManager().sendGameMessage("Your feet skid as you land floor.");
-								stop();
-								return;
-							}
-						}
-					}, 0, 0);
-				} else if (id == 77052) {
-					if (!Agility.hasLevel(player, 70))
-						return;
-					boolean isEast = player.getX() > 2734;
-					final WorldTile tile = new WorldTile(isEast ? 2730 : 2735, 10008, 0);
-					WorldTasksManager.schedule(new WorldTask() {
-
-						int ticks = -1;
-
-						@Override
-						public void run() {
-							ticks++;
-							if (ticks == 0)
-								player.setNextFaceWorldTile(object);
-							else if (ticks == 1)
-								player.setNextAnimation(new Animation(17811));
-							else if (ticks == 9)
-								player.setNextWorldTile(tile);
-							else if (ticks == 10) {
-								stop();
-								return;
-							}
-						}
-					}, 0, 0);
-				} else if (id == 9311 || id == 9312) {
-					if (!Agility.hasLevel(player, 21))
-						return;
-					WorldTasksManager.schedule(new WorldTask() {
-
-						int ticks = 0;
-
-						@Override
-						public void run() {
-							boolean withinGE = id == 9312;
-							WorldTile tile = withinGE ? new WorldTile(3139, 3516, 0) : new WorldTile(3143, 3514, 0);
-							player.lock();
-							ticks++;
-							if (ticks == 1) {
-								player.setNextAnimation(new Animation(2589));
-								player.setNextForceMovement(new ForceMovement(object, 1, withinGE ? ForceMovement.WEST : ForceMovement.EAST));
-							} else if (ticks == 3) {
-								player.setNextWorldTile(new WorldTile(3141, 3515, 0));
-								player.setNextAnimation(new Animation(2590));
-							} else if (ticks == 5) {
-								player.setNextAnimation(new Animation(2591));
-								player.setNextWorldTile(tile);
-							} else if (ticks == 6) {
-								player.setNextWorldTile(new WorldTile(tile.getX() + (withinGE ? -1 : 1), tile.getY(), tile.getPlane()));
-								player.unlock();
-								stop();
-							}
-						}
-					}, 0, 0);
 				} else if (id == 2878 || id == 2879) {
 					player.getDialogueManager().startDialogue("SimpleMessage", "You step into the pool of sparkling water. You feel the energy rush through your veins.");
 					final boolean isLeaving = id == 2879;
@@ -1256,28 +902,6 @@ public final class ObjectHandler {
 							player.setRun(isRun);
 						}
 					}, 4);
-				} else if (id == 77377 || id == 77379 || id == 77375 || id == 77373 || id == 77371) {
-					final HatchetDefinitions hatchet = Woodcutting.getHatchet(player);
-					if (hatchet == null) {
-						player.getSocialManager().sendGameMessage("You dont have the required level to use that axe or you don't have a hatchet.");
-						return;
-					}
-					player.lock();
-					WorldTasksManager.schedule(new WorldTask() {
-
-						@Override
-						public void run() {
-							player.setNextAnimation(new Animation(hatchet.getEmoteId()));
-							if (Utils.getRandom(13 - hatchet.getAxeTime()) <= 3) {
-								stop();
-								WorldObject o = new WorldObject(object);
-								o.setId(object.getId() - 1);
-								World.spawnObjectTemporary(o, 10000);
-								player.addWalkSteps(x, y, 1, false);
-								player.unlock();
-							}
-						}
-					}, 1, 1);
 				} else if (id == 77506 || id == 77507) {
 					player.useStairs(-1, new WorldTile(player.getX(), player.getY() + (id == 77506 ? -9 : 9), id == 77506 ? 2 : 0), 1, 2);
 				} else if (id == 77508 || id == 77509) {
@@ -1309,54 +933,8 @@ public final class ObjectHandler {
 					player.useStairs(833, new WorldTile(2842, 9823, 0), 1, 2);
 				} else if (id == 74866 && object.getX() == 2842 && object.getY() == 9824) {
 					player.useStairs(828, new WorldTile(2842, 3423, 0), 1, 2);
-				} else if (id == 9294) {
-					if (!Agility.hasLevel(player, 80))
-						return;
-					final boolean isRunning = player.getRun();
-					final boolean isSouth = player.getY() > 9813;
-					final WorldTile tile = isSouth ? new WorldTile(2878, 9812, 0) : new WorldTile(2881, 9814, 0);
-					player.setRun(true);
-					player.addWalkSteps(isSouth ? 2881 : 2877, isSouth ? 9814 : 9812);
-					WorldTasksManager.schedule(new WorldTask() {
-						int ticks = 0;
-
-						@Override
-						public void run() {
-							ticks++;
-							if (ticks == 2)
-								player.setNextFaceWorldTile(object);
-							else if (ticks == 3) {
-								player.setNextAnimation(new Animation(1995));
-								player.setNextForceMovement(new NewForceMovement(player, 0, tile, 4, Utils.getFaceDirection(object.getX() - player.getX(), object.getY() - player.getY())));
-							} else if (ticks == 4)
-								player.setNextAnimation(new Animation(1603));
-							else if (ticks == 7) {
-								player.setNextWorldTile(tile);
-								player.setRun(isRunning);
-								stop();
-								return;
-							}
-						}
-					}, 0, 0);
-				} else if (id == 2333 || id == 2334 || id == 2335) {
-					if (!Agility.hasLevel(player, 74))
-						return;
-					player.lock(2);
-					player.setNextAnimation(new Animation(741));
-					player.setNextForceMovement(new ForceMovement(object, 1, Utils.getMoveDirection(player.getX() - object.getX(), player.getY() - object.getY()) == 6 ? 0 : 2));
-					WorldTasksManager.schedule(new WorldTask() {
-
-						@Override
-						public void run() {
-							player.setNextWorldTile(object);
-						}
-					});
 				} else if (id == 70794) {
 					player.useStairs(-1, new WorldTile(1340, 6488, 0), 1, 2);
-				} else if (id == 70795) {
-					if (!Agility.hasLevel(player, 50))
-						return;
-					player.getDialogueManager().startDialogue("GrotwormLairD", true);
 				} else if (id == 70812) {
 					player.getDialogueManager().startDialogue("GrotwormLairD", false);
 				} else if (id == 70799) {
@@ -1384,111 +962,15 @@ public final class ObjectHandler {
 					player.useStairs(-1, new WorldTile(2442, 10147, 0), 1, 2);
 				else if (id == 8966)
 					player.useStairs(-1, new WorldTile(2523, 3739, 0), 1, 2);
-				else if (id == 76219) {
-					player.getSocialManager().sendGameMessage("You search the shelves...");
-					player.lock();
-					WorldTasksManager.schedule(new WorldTask() {
-
-						@Override
-						public void run() {
-							player.unlock();
-							player.getSocialManager().sendGameMessage("...and among the strange paraphernalia, you find an empty beer glass.");
-							player.getInventory().addItem(SqirkFruitSqueeze.BEER_GLASS, 1);
-						}
-					}, 2);
-				} else if (id == 12163 || id == 12164 || id == 12165 || id == 12166) {
-					if (player.getTemporaryAttributtes().get("canoe_shaped") != null && (boolean) player.getTemporaryAttributtes().get("canoe_shaped"))
-						Canoes.openTravelInterface(player, id - 12163);
-					else if (player.getTemporaryAttributtes().get("canoe_chopped") != null && (boolean) player.getTemporaryAttributtes().get("canoe_chopped"))
-						Canoes.openSelectionInterface(player);
-					else
-						Canoes.chopCanoeTree(player, id - 12163);
-				} else if (id == 76499) {
+				else if (id == 76499) {
 					player.lock(1);
 					player.addWalkSteps(player.getX(), player.getY() == 3164 ? 3163 : 3164, 1, false);
-				} else if (id == 11195 || id == 11194 || id == 11364)
-					player.getActionManager().setAction(new JemMining(object));
-				else if (id == 2491 || id == 16684)
-					player.getActionManager().setAction(new EssenceMining(object, player.getSkills().getLevel(Skills.MINING) < 30 ? EssenceDefinitions.Rune_Essence : EssenceDefinitions.Pure_Essence));
-				else if (id == 2478)
-					Runecrafting.craftEssence(player, 556, 1, 5, false, 11, 2, 22, 3, 34, 4, 44, 5, 55, 6, 66, 7, 77, 88, 9, 99, 10);
-				else if (id == 2479)
-					Runecrafting.craftEssence(player, 558, 2, 5.5, false, 14, 2, 28, 3, 42, 4, 56, 5, 70, 6, 84, 7, 98, 8);
-				else if (id == 2480)
-					Runecrafting.craftEssence(player, 555, 5, 6, false, 19, 2, 38, 3, 57, 4, 76, 5, 95, 6);
+				}
 				else if (id == 63093)
 					player.useStairs(-1, new WorldTile(4620, 5458, 3), 0, 1);
 				else if (id == 63094)
 					player.useStairs(-1, new WorldTile(3410, 3329, 0), 0, 1);
-				else if (id == 64294 || id == 64295) {
-					if (!Agility.hasLevel(player, 73)) {
-						player.getDialogueManager().startDialogue("SimplePlayerMessage", "A fall would be a long way down.");
-						return;
-					}
-					player.setNextAnimation(new Animation(6132));
-					player.lock(3);
-					final WorldTile toTile;
-					if (id == 64295 && x == 4661 && y == 5476)
-						toTile = new WorldTile(4658, 5476, 3);
-					else if (id == 64295 && x == 4682 && y == 5476)
-						toTile = new WorldTile(4685, 5476, 3);
-					else if (id == 64294 && x == 4684 && y == 5476)
-						toTile = new WorldTile(4681, 5476, 3);
-					else
-						toTile = new WorldTile(4662, 5476, 3);
-					player.setNextForceMovement(new ForceMovement(player, 0, toTile, 2, object.getRotation() == 2 ? ForceMovement.EAST : ForceMovement.WEST));
-					WorldTasksManager.schedule(new WorldTask() {
-
-						@Override
-						public void run() {
-							player.setNextWorldTile(toTile);
-						}
-					}, 1);
-				} else if (id == 2481)
-					Runecrafting.craftEssence(player, 557, 9, 6.5, false, 26, 2, 52, 3, 78, 4);
-				else if (id == 2482)
-					Runecrafting.craftEssence(player, 554, 14, 7, false, 35, 2, 70, 3);
-				else if (id == 2483)
-					Runecrafting.craftEssence(player, 559, 20, 7.5, false, 46, 2, 92, 3);
-				else if (id == 2484)
-					Runecrafting.craftEssence(player, 564, 27, 8, true, 59, 2);
-				else if (id == 2487)
-					Runecrafting.craftEssence(player, 562, 35, 8.5, true, 74, 2);
-				else if (id == 17010)
-					Runecrafting.craftEssence(player, 9075, 40, 8.7, true, 82, 2);
-				else if (id == 2486)
-					Runecrafting.craftEssence(player, 561, 45, 9, true, 91, 2);
-				else if (id == 2485)
-					Runecrafting.craftEssence(player, 563, 50, 9.5, true);
-				else if (id == 2488)
-					Runecrafting.craftEssence(player, 560, 65, 10, true);
-				else if (id == 30624)
-					Runecrafting.craftEssence(player, 565, 77, 10.5, true);
-				else if (id == 2452) {
-					int hatId = player.getEquipment().getHatId();
-					if (hatId == Runecrafting.AIR_TIARA || hatId == Runecrafting.OMNI_TIARA || player.getInventory().containsItem(1438, 1))
-						Runecrafting.enterAirAltar(player);
-				} else if (id == 2455) {
-					int hatId = player.getEquipment().getHatId();
-					if (hatId == Runecrafting.EARTH_TIARA || hatId == Runecrafting.OMNI_TIARA || player.getInventory().containsItem(1440, 1))
-						Runecrafting.enterEarthAltar(player);
-				} else if (id == 2456) {
-					int hatId = player.getEquipment().getHatId();
-					if (hatId == Runecrafting.FIRE_TIARA || hatId == Runecrafting.OMNI_TIARA || player.getInventory().containsItem(1442, 1))
-						Runecrafting.enterFireAltar(player);
-				} else if (id == 2454) {
-					int hatId = player.getEquipment().getHatId();
-					if (hatId == Runecrafting.WATER_TIARA || hatId == Runecrafting.OMNI_TIARA || player.getInventory().containsItem(1444, 1))
-						Runecrafting.enterWaterAltar(player);
-				} else if (id == 2457) {
-					int hatId = player.getEquipment().getHatId();
-					if (hatId == Runecrafting.BODY_TIARA || hatId == Runecrafting.OMNI_TIARA || player.getInventory().containsItem(1446, 1))
-						Runecrafting.enterBodyAltar(player);
-				} else if (id == 2453) {
-					int hatId = player.getEquipment().getHatId();
-					if (hatId == Runecrafting.MIND_TIARA || hatId == Runecrafting.OMNI_TIARA || player.getInventory().containsItem(1448, 1))
-						Runecrafting.enterMindAltar(player);
-				} else if (id == 47120) { // zaros altar
+				else if (id == 47120) { // zaros altar
 					// recharge if needed
 					if (player.getPrayer().getPrayerpoints() < player.getSkills().getLevelForXp(Skills.PRAYER) * 10) {
 						player.lock(12);
@@ -1497,9 +979,7 @@ public final class ObjectHandler {
 						player.getPrayer().refreshPrayerPoints();
 					}
 					player.getDialogueManager().startDialogue("ZarosAltar");
-				} else if (id == 19222)
-					Falconry.beginFalconry(player);
-				else if (id == 5947) {
+				} else if (id == 5947) {
 					player.useStairs(540, new WorldTile(3170, 9571, 0), 8, 9);
 					WorldTasksManager.schedule(new WorldTask() {
 
@@ -1537,8 +1017,6 @@ public final class ObjectHandler {
 					player.getDialogueManager().startDialogue("Banker", 553);
 				else if (id == 57437 || id == 12309 || id == 2693)
 					player.getBank().openBank();
-				else if (id == 9356)
-					FightCaves.enterFightCaves(player);
 				else if (id == 68223)
 					FightPits.enterLobby(player, false);
 				else if (id == 9293) {
@@ -1595,8 +1073,6 @@ public final class ObjectHandler {
 				else if (id == 20600 && object.getX() == 3072 && object.getY() == 3648)
 					player.useStairs(-1, new WorldTile(3077, 10058, 0), 0, 1);
 				// nomads requiem
-				else if (id == 18425 && !player.getQuestManager().completedQuest(Quests.NOMADS_REQUIEM))
-					NomadsRequiem.enterNomadsRequiem(player);
 				else if (id == 42219) {
 					player.useStairs(-1, new WorldTile(1886, 3178, 0), 0, 1);
 					if (player.getQuestManager().getQuestStage(Quests.NOMADS_REQUIEM) == -2) // for
@@ -1610,9 +1086,7 @@ public final class ObjectHandler {
 						// quest
 						// reqs
 						player.getQuestManager().setQuestStageAndRefresh(Quests.NOMADS_REQUIEM, 0);
-				} else if (id == 8689)
-					player.getActionManager().setAction(new CowMilkingAction());
-				else if (id == 42220)
+				} else if (id == 42220)
 					player.useStairs(-1, new WorldTile(3082, 3475, 0), 0, 1);
 				else if (id == 67043)
 					player.useStairs(-1, new WorldTile(2219, 4532, 0), 0, 1);
@@ -1700,45 +1174,8 @@ public final class ObjectHandler {
 
 					}, 0, 0);
 					// BarbarianOutpostAgility start
-				} else if (id == 20210)
-					BarbarianOutpostAgility.enterObstaclePipe(player, object);
-				else if (id == 43526)
-					BarbarianOutpostAgility.swingOnRopeSwing(player, object);
-				else if (id == 43595 && x == 2550 && y == 3546)
-					BarbarianOutpostAgility.walkAcrossLogBalance(player, object);
-				else if (id == 20211 && x == 2538 && y == 3545)
-					BarbarianOutpostAgility.climbObstacleNet(player, object);
-				else if (id == 2302 && x == 2535 && y == 3547)
-					BarbarianOutpostAgility.walkAcrossBalancingLedge(player, object);
-				else if (id == 1948)
-					BarbarianOutpostAgility.climbOverCrumblingWall(player, object);
-				else if (id == 43533)
-					BarbarianOutpostAgility.runUpWall(player, object);
-				else if (id == 43597)
-					BarbarianOutpostAgility.climbUpWall(player, object);
-				else if (id == 43587)
-					BarbarianOutpostAgility.fireSpringDevice(player, object);
-				else if (id == 43527)
-					BarbarianOutpostAgility.crossBalanceBeam(player, object);
-				else if (id == 43531)
-					BarbarianOutpostAgility.jumpOverGap(player, object);
-				else if (id == 43532)
-					BarbarianOutpostAgility.slideDownRoof(player, object);
+				}
 				// Wilderness course start
-				else if (id == 64698)
-					WildernessAgility.walkAcrossLogBalance(player, object);
-				else if (id == 64699)
-					WildernessAgility.jumpSteppingStones(player, object);
-				else if (id == 65362)
-					WildernessAgility.enterWildernessPipe(player, object.getX(), object.getY());
-				else if (id == 65734)
-					WildernessAgility.climbUpWall(player, object);
-				else if (id == 64696)
-					WildernessAgility.swingOnRopeSwing(player, object);
-				else if (id == 65365)
-					WildernessAgility.enterWildernessCourse(player);
-				else if (id == 65367)
-					WildernessAgility.exitWildernessCourse(player);
 				// rock living caverns
 				else if (id == 45077) {
 					player.lock();
@@ -1771,10 +1208,7 @@ public final class ObjectHandler {
 						}
 
 					}, 1, 0);
-				} else if (id == 45076)
-					player.getActionManager().setAction(new Mining(object, RockDefinitions.LRC_Gold_Ore));
-				else if (id == 5999)
-					player.getActionManager().setAction(new Mining(object, RockDefinitions.LRC_Coal_Ore));
+				}
 				else if (id == 45078)
 					player.useStairs(2413, new WorldTile(3012, 9832, 0), 2, 2);
 				else if (id == 45079)
@@ -1855,26 +1289,6 @@ public final class ObjectHandler {
 					player.useStairs(833, new WorldTile(3117, 9852, 0), 1, 2);
 				else if (id == 29355 && object.getX() == 3116 && object.getY() == 9852)
 					player.useStairs(833, new WorldTile(3115, 3452, 0), 1, 2);
-				else if (id == 69526)
-					GnomeAgility.walkGnomeLog(player);
-				else if (id == 69383)
-					GnomeAgility.climbGnomeObstacleNet(player);
-				else if (id == 69508)
-					GnomeAgility.climbUpGnomeTreeBranch(player);
-				else if (id == 2312)
-					GnomeAgility.walkGnomeRope(player);
-				else if (id == 4059)
-					GnomeAgility.walkBackGnomeRope(player);
-				else if (id == 69507)
-					GnomeAgility.climbDownGnomeTreeBranch(player);
-				else if (id == 69384)
-					GnomeAgility.climbGnomeObstacleNet2(player);
-				else if (id == 69377 || id == 69378)
-					GnomeAgility.enterGnomePipe(player, object.getX(), object.getY());
-				else if (id == 69389)
-					GnomeAgility.jumpDown(player, object);
-				else if (id == 69506)
-					GnomeAgility.climbUpTree(player);
 				else if (Wilderness.isDitch(id)) {// wild ditch
 					player.getDialogueManager().startDialogue("WildernessDitch", object);
 				} else if (id == 42611) {// Magic Portal
@@ -1971,8 +1385,6 @@ public final class ObjectHandler {
 					player.getControlerManager().startControler("FightPits");
 				} else if (id == 54019 || id == 54020 || id == 55301)
 					PkRank.showRanks(player);
-				else if (id == 1817)// kbd lever
-					Magic.pushLeverTeleport(player, new WorldTile(3048, 3519, 0), 827, "You activate the artefact...", "and teleport out of the dragon's lair.");
 				else if (id == 77834)
 					player.getDialogueManager().startDialogue("KBDArtifact");
 				else if (id == 1816 && object.getX() == 3067 && object.getY() == 10252) { // kbd
@@ -2044,9 +1456,6 @@ public final class ObjectHandler {
 					player.useStairs(-1, new WorldTile(3045, 3927, 0), 0, 1);
 				} else if (id == 26194) {
 					player.getDialogueManager().startDialogue("PartyRoomLever");
-				} else if (id == 61190 || id == 61191 || id == 61192 || id == 61193) {
-					if (objectDef.containsOption(0, "Chop down"))
-						player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.NORMAL));
 				} else if (id == 20573)
 					player.getControlerManager().startControler("RefugeOfFear");
 				else if (id == 4039) {
@@ -2085,36 +1494,6 @@ public final class ObjectHandler {
 					player.getSocialManager().sendGameMessage("This chest is securely locked shut.");
 				else if (id == 16944)
 					FairyRings.openRingInterface(player, object, false);
-				else if (id == 31080// copper rocks
-						|| id == 14856 || id == 14857 || id == 14858 || id == 11960 || id == 11961 || id == 11962 || id == 11936 || id == 11937 || id == 11938 || id == 14906 || id == 14907 || id == 11960 || id == 31081 || id == 31082 || id == 2090 || id == 2091 || id == 9708)
-					player.getActionManager().setAction(new Mining(object, RockDefinitions.Copper_Ore));
-				else if (id == 31077// tin rocks
-						|| id == 11934 || id == 11935 || id == 14902 || id == 14903 || id == 31078 || id == 2094 || id == 2095 || id == 9714 || id == 11957 || id == 11958 || id == 11959 || id == 11933)
-					player.getActionManager().setAction(new Mining(object, RockDefinitions.Tin_Ore));
-				else if (id == 31071// iron rocks
-						|| id == 31072 || id == 31073 || id == 2093 || id == 2092 || id == 9717 || id == 11954 || id == 11955 || id == 11956 || id == 14900 || id == 14901 || id == 14913 || id == 14914 || id == 11948 || id == 11949 || id == 11950)
-					player.getActionManager().setAction(new Mining(object, RockDefinitions.Iron_Ore));
-				else if (id == 31068// coal rocks
-						|| id == 31069 || id == 31070 || id == 2096 || id == 2097 || id == 14850 || id == 14851 || id == 14852 || id == 11963 || id == 11964 || id == 11965 || id == 11930 || id == 11931 || id == 11932)
-					player.getActionManager().setAction(new Mining(object, RockDefinitions.Coal_Ore));
-				else if (id == 31065// Gold rocks
-						|| id == 31066 || id == 9720 || id == 2098 || id == 2099 || id == 11951 || id == 11952 || id == 11953)
-					player.getActionManager().setAction(new Mining(object, RockDefinitions.Gold_Ore));
-				else if (id == 31086// mithril rocks
-						|| id == 31088 || id == 2103 || id == 2102 || id == 14853 || id == 11945 || id == 11946 || id == 11947 || id == 11942 || id == 11943 || id == 11944 || id == 14854)
-					player.getActionManager().setAction(new Mining(object, RockDefinitions.Mithril_Ore));
-				else if (id == 31083// adamant rocks
-						|| id == 31085 || id == 2104 || id == 2105 || id == 11939 || id == 11940 || id == 11941 || id == 14862 || id == 14863 || id == 14864)
-					player.getActionManager().setAction(new Mining(object, RockDefinitions.Adamant_Ore));
-				else if (id == 14859// rune rocks
-						|| id == 4860 || id == 2106 || id == 2107 || id == 14860 || id == 14861)
-					player.getActionManager().setAction(new Mining(object, RockDefinitions.Runite_Ore));
-				else if (id == 2108// clay rocks
-						|| id == 2109 || id == 14904 || id == 14905)
-					player.getActionManager().setAction(new Mining(object, RockDefinitions.Clay_Ore));
-				else if (id == 11948// silver rocks
-						|| id == 11948 || id == 11949 || id == 11950 || id == 2100 || id == 2101)
-					player.getActionManager().setAction(new Mining(object, RockDefinitions.Silver_Ore));
 				else if (id == 26723)
 					player.getDialogueManager().startDialogue("SpiritTreeD", (object.getId() == 68973 && object.getId() == 68974) ? 3637 : 3636);
 				else {
@@ -2161,15 +1540,6 @@ public final class ObjectHandler {
 							slashWeb(player, object);
 						}
 						break;
-					case "anvil":
-						if (objectDef.containsOption(0, "Smith")) {
-							ForgingBar bar = ForgingBar.getBar(player);
-							if (bar != null)
-								ForgingInterface.sendSmithingInterface(player, bar);
-							else
-								player.getSocialManager().sendGameMessage("You have no bars which you have smithing level to use.");
-						}
-						break;
 					case "potter's wheel":
 						player.getDialogueManager().startDialogue("PotteryWheel");
 						break;
@@ -2187,59 +1557,6 @@ public final class ObjectHandler {
 						if (objectDef.containsOption(0, "Bank") || objectDef.containsOption(0, "Use"))
 							player.getBank().openBank();
 						break;
-					// Woodcutting start
-					case "dramen tree":
-						if (objectDef.containsOption(0, "Chop down")) {
-							if (!player.isKilledLostCityTree()) {
-								if (player.getTemporaryAttributtes().get("HAS_SPIRIT_TREE") != null)
-									return;
-								new TreeSpirit(player, new WorldTile(2859, 9734, 0));
-								return;
-							}
-							player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.DRAMEN));
-						}
-						break;
-					case "tree":
-						if (objectDef.containsOption(0, "Chop down"))
-							player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.NORMAL));
-						break;
-					case "evergreen":
-						if (objectDef.containsOption(0, "Chop down"))
-							player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.EVERGREEN));
-						break;
-					case "dead tree":
-						if (objectDef.containsOption(0, "Chop down"))
-							player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.DEAD));
-						break;
-					case "oak":
-						if (objectDef.containsOption(0, "Chop down"))
-							player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.OAK));
-						break;
-					case "willow":
-						if (objectDef.containsOption(0, "Chop down"))
-							player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.WILLOW));
-						break;
-					case "maple tree":
-						if (objectDef.containsOption(0, "Chop down"))
-							player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.MAPLE));
-						break;
-					case "ivy":
-						if (objectDef.containsOption(0, "Chop"))
-							player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.IVY));
-						break;
-					case "yew":
-						if (objectDef.containsOption(0, "Chop down"))
-							player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.YEW));
-						break;
-					case "magic tree":
-						if (objectDef.containsOption(0, "Chop down"))
-							player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.MAGIC));
-						break;
-					case "cursed magic tree":
-						if (objectDef.containsOption(0, "Chop down"))
-							player.getActionManager().setAction(new Woodcutting(object, TreeDefinitions.CURSED_MAGIC));
-						break;
-					// Woodcutting end
 					case "gate":
 					case "large door":
 					case "metal door":
@@ -2345,21 +1662,13 @@ public final class ObjectHandler {
 				player.faceObject(object);
 				if (!player.getControlerManager().processObjectClick2(object))
 					return;
-				else if (player.getFarmingManager().isFarming(id, null, 2))
-					return;
 				else if (id == 17010)
 					player.getDialogueManager().startDialogue("LunarAltar");
 				else if (id == 12774)
 					player.getDialogueManager().startDialogue("ShantyPassDangerSignD");
 
-				else if (id == 2491)
-					MiningBase.propect(player, "This rock contains unbound Rune Stone essence.");
-				else if (id == 34384 || id == 34383 || id == 14011 || id == 7053 || id == 34387 || id == 34386 || id == 34385)
-					Thieving.handleStalls(player, object);
 				else if (id == 2693)
 					player.getGeManager().openCollectionBox();
-				else if (id == 35390)
-					GodWars.passGiantBoulder(player, object, false);
 				else if (id == 2418)
 					PartyRoom.openPartyChest(player);
 				else if (id == 67051)
@@ -2467,8 +1776,6 @@ public final class ObjectHandler {
 				player.faceObject(object);
 				if (!player.getControlerManager().processObjectClick3(object))
 					return;
-				else if (player.getFarmingManager().isFarming(id, null, 3))
-					return;
 				else if (id == 12309)
 					ShopsHandler.openShop(player, 71);
 				switch (objectDef.name.toLowerCase()) {
@@ -2524,10 +1831,6 @@ public final class ObjectHandler {
 				if (!player.getControlerManager().processObjectClick4(object))
 					return;
 				// living rock Caverns
-				if (id == 45076)
-					MiningBase.propect(player, "This rock contains a large concentration of gold.");
-				else if (id == 5999)
-					MiningBase.propect(player, "This rock contains a large concentration of coal.");
 				else {
 					switch (objectDef.name.toLowerCase()) {
 					default:
@@ -2556,9 +1859,6 @@ public final class ObjectHandler {
 					// unused
 				} else {
 					switch (objectDef.name.toLowerCase()) {
-					case "magical wheat":
-						PuroPuro.pushThrough(player, object);
-						break;
 					default:
 						player.getSocialManager().sendGameMessage("Nothing interesting happens.");
 						break;
@@ -2811,31 +2111,7 @@ public final class ObjectHandler {
 				if (!player.getControlerManager().handleItemOnObject(object, item))
 					return;
 				player.faceObject(object);
-				if (itemId == 1438 && object.getId() == 2452) {
-					Runecrafting.enterAirAltar(player);
-				} else if (itemId == 1440 && object.getId() == 2455) {
-					Runecrafting.enterEarthAltar(player);
-				} else if (itemId == 1442 && object.getId() == 2456) {
-					Runecrafting.enterFireAltar(player);
-				} else if (itemId == 1444 && object.getId() == 2454) {
-					Runecrafting.enterWaterAltar(player);
-				} else if (itemId == 1446 && object.getId() == 2457) {
-					Runecrafting.enterBodyAltar(player);
-				} else if (itemId == 1448 && object.getId() == 2453) {
-					Runecrafting.enterMindAltar(player);
-				} else if (itemId == 1456 && object.getId() == 2462) {
-					Runecrafting.enterDeathAltar(player);
-				} else if (itemId == 1452 && object.getId() == 2461) {
-					Runecrafting.enterChoasAltar(player);
-				} else if (itemId == 1450 && object.getId() == 2464) {
-					Runecrafting.enterBloodAltar(player);
-				} else if (itemId == 1454 && object.getId() == 2458) {
-					Runecrafting.enterCosmicAltar(player);
-				} else if (itemId == 1462 && object.getId() == 2460) {
-					Runecrafting.enterNatureAltar(player);
-				} else if (player.getFarmingManager().isFarming(object.getId(), item, 0)) {
-					return;
-				} else if (object.getId() == 733 || object.getId() == 64729) {
+				if (object.getId() == 733 || object.getId() == 64729) {
 					player.setNextAnimation(new Animation(PlayerCombat.getWeaponAttackEmote(-1, 0)));
 					slashWeb(player, object);
 				} else if (object.getId() == 48803 && itemId == 954) {
@@ -2868,50 +2144,6 @@ public final class ObjectHandler {
 
 				} else {
 					switch (objectDef.name.toLowerCase()) {
-					case "fountain":
-					case "well":
-					case "sink":
-						if (WaterFilling.isFilling(player, itemId, false))
-							return;
-						break;
-					case "anvil":
-						if (GodswordCreating.isShard(itemId)) {
-							GodswordCreating.joinPieces(player, true);
-							return;
-						} else if (SpiritshieldCreating.isSigil(item.getId())) {
-							SpiritshieldCreating.attachShield(player, item, true);
-							return;
-						} else if (DragonfireShieldCreating.isDragonFireShield(item.getId())) {
-							DragonfireShieldCreating.joinPieces(player);
-							return;
-						}
-						ForgingBar bar = ForgingBar.forId(itemId);
-						if (bar != null)
-							ForgingInterface.sendSmithingInterface(player, bar);
-						break;
-					case "furnace":
-					case "lava furnace":
-						if (item.getId() == 2353 || item.getId() == 4)
-							player.getDialogueManager().startDialogue("SingleSmithingD", object, SmeltingBar.CANNON_BALLS);
-						else if (item.getId() == 2357)
-							JewllerySmithing.openInterface(player);
-						break;
-					case "altar":
-						if (itemId == SpiritshieldCreating.SPIRIT_SHIELD || itemId == SpiritshieldCreating.HOLY_ELIXIR) {
-							SpiritshieldCreating.blessShield(player, true);
-							return;
-						}
-						break;
-					case "range":
-					case "cooking range":
-					case "stove":
-						Cookables cook = Cooking.isCookingSkill(item);
-						if (cook != null) {
-							player.getDialogueManager().startDialogue("CookingD", cook, object);
-							return;
-						}
-						player.getDialogueManager().startDialogue("SimpleMessage", "You can't cook that on a " + (objectDef.name.equals("Fire") ? "fire" : "range") + ".");
-						break;
 					default:
 						player.getSocialManager().sendGameMessage("Nothing interesting happens.");
 						break;

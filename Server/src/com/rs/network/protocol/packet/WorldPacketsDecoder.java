@@ -18,11 +18,11 @@ import com.rs.game.player.QuickChatMessage;
 import com.rs.game.player.RouteEvent;
 import com.rs.game.player.Skills;
 import com.rs.game.player.actions.PlayerFollow;
+import com.rs.game.player.actions.combat.Magic;
 import com.rs.game.player.actions.combat.PlayerCombat;
 import com.rs.game.player.content.Commands;
 import com.rs.game.player.content.ForumAuthManager;
 import com.rs.game.player.content.FriendChatsManager;
-import com.rs.game.player.content.Magic;
 import com.rs.game.player.content.Shop;
 import com.rs.game.player.content.SkillsDialogue;
 import com.rs.game.player.content.pet.Pets;
@@ -286,8 +286,6 @@ public final class WorldPacketsDecoder {
 					public void run() {
 						if (!player.getControlerManager().processItemOnPlayer(p2, item))
 							return;
-						if (itemId == 4155)
-							player.getSlayerManager().invitePlayer(p2);
 					}
 				}));
 				break;
@@ -426,9 +424,6 @@ public final class WorldPacketsDecoder {
 					}
 					break;
 				}
-				break;
-			case 430:
-				Magic.processLunarSpell(player, componentId, p2);
 				break;
 			}
 			if (Settings.DEBUG)
@@ -619,9 +614,6 @@ public final class WorldPacketsDecoder {
 					break;
 				}
 				break;
-			case 430:
-				Magic.processLunarSpell(player, componentId, npc);
-				break;
 			}
 			if (Settings.DEBUG)
 				System.out.println("Spell:" + componentId);
@@ -811,7 +803,6 @@ public final class WorldPacketsDecoder {
 			if (forceRun)
 				player.setRun(forceRun);
 			player.stopAll();
-			player.getSlayerManager().invitePlayer(p2);
 		} else if (packetId == ATTACK_NPC) {
 			if (!player.hasStarted() || !player.clientHasLoadedMapRegion() || player.isDead())
 				return;

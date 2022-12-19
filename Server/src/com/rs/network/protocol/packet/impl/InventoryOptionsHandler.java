@@ -15,45 +15,26 @@ import com.rs.game.player.ChargesManager;
 import com.rs.game.player.Inventory;
 import com.rs.game.player.Player;
 import com.rs.game.player.Skills;
-import com.rs.game.player.actions.BoxAction;
-import com.rs.game.player.actions.BoxAction.HunterEquipment;
-import com.rs.game.player.actions.Firemaking;
-import com.rs.game.player.actions.Fletching;
-import com.rs.game.player.actions.Fletching.Fletch;
-import com.rs.game.player.actions.GemCutting;
-import com.rs.game.player.actions.HerbCleaning;
-import com.rs.game.player.actions.Herblore;
+import com.rs.game.player.actions.combat.Magic;
 import com.rs.game.player.content.AncientEffigies;
 import com.rs.game.player.content.Burying.Bone;
 import com.rs.game.player.content.Dicing;
 import com.rs.game.player.content.DwarfMultiCannon;
 import com.rs.game.player.content.FadingScreen;
 import com.rs.game.player.content.Foods;
-import com.rs.game.player.content.GodswordCreating;
-import com.rs.game.player.content.Hunter;
-import com.rs.game.player.content.Hunter.FlyingEntities;
 import com.rs.game.player.content.ItemSets;
 import com.rs.game.player.content.ItemTransportation;
-import com.rs.game.player.content.JewllerySmithing;
 import com.rs.game.player.content.Lamps;
 import com.rs.game.player.content.LightSource;
-import com.rs.game.player.content.Magic;
 import com.rs.game.player.content.Nest;
 import com.rs.game.player.content.Pots;
-import com.rs.game.player.content.Runecrafting;
-import com.rs.game.player.content.Slayer;
-import com.rs.game.player.content.SpiritshieldCreating;
 import com.rs.game.player.content.Summoning;
 import com.rs.game.player.content.Summoning.Pouch;
 import com.rs.game.player.content.TreeSaplings;
 import com.rs.game.player.content.WeaponPoison;
-import com.rs.game.player.controllers.Barrows;
-import com.rs.game.player.controllers.SorceressGarden;
 import com.rs.game.player.dialogues.impl.AmuletAttaching;
 import com.rs.game.player.dialogues.impl.CombinationsD.Combinations;
 import com.rs.game.player.dialogues.impl.LeatherCraftingD;
-import com.rs.game.player.dialogues.impl.SqirkFruitSqueeze;
-import com.rs.game.player.dialogues.impl.SqirkFruitSqueeze.SqirkFruit;
 import com.rs.game.tasks.WorldTask;
 import com.rs.game.tasks.WorldTasksManager;
 import com.rs.io.InputStream;
@@ -64,11 +45,7 @@ public class InventoryOptionsHandler {
 	public static void handleItemOption2(final Player player, final int slotId, final int itemId, Item item) {
 		if (player.isLocked() || player.getEmotesManager().isDoingEmote())
 			return;
-		if (Firemaking.isFiremaking(player, itemId))
-			return;
-		else if (itemId == 4155)
-			player.getSlayerManager().checkKillsLeft();
-		else if (itemId == 15262)
+		if (itemId == 15262)
 			ItemSets.openSkillPack(player, itemId, 12183, 5000, player.getInventory().getAmountOf(itemId));
 		else if (itemId == 15362)
 			ItemSets.openSkillPack(player, itemId, 230, 50, player.getInventory().getAmountOf(itemId));
@@ -81,23 +58,9 @@ public class InventoryOptionsHandler {
 		else if (itemId == 1225) {
 			// player.getPackets().sendInputIntegerScript("What would you like to do when you grow up?");
 			// player.getTemporaryAttributtes().put("xformring", Boolean.TRUE);
-		} else if (itemId >= 5509 && itemId <= 5514) {
-			int pouch = -1;
-			if (itemId == 5509)
-				pouch = 0;
-			if (itemId == 5510 || itemId == 5511)
-				pouch = 1;
-			if (itemId == 5512)
-				pouch = 2;
-			if (itemId == 5514)
-				pouch = 3;
-			Runecrafting.emptyPouch(player, pouch);
-			player.stopAll(false);
 		} else if (itemId >= 15086 && itemId <= 15100) {
 			Dicing.handleRoll(player, itemId, true);
 			return;
-		} else if (itemId == 6583 || itemId == 7927) {
-			JewllerySmithing.ringTransformation(player, itemId);
 		} else if (item.getDefinitions().containsOption(1, "Extinguish")) {
 			if (LightSource.extinguishSource(player, slotId, false))
 				return;
@@ -143,8 +106,6 @@ public class InventoryOptionsHandler {
 			@Override
 			public void run() {
 				player.unlock();
-				if (Barrows.digIntoGrave(player))
-					return;
 				if (player.getX() == 3005 && player.getY() == 3376 || player.getX() == 2999 && player.getY() == 3375 || player.getX() == 2996 && player.getY() == 3377 || player.getX() == 2989 && player.getY() == 3378 || player.getX() == 2987 && player.getY() == 3387 || player.getX() == 2984 && player.getY() == 3387) {
 					// mole
 					player.setNextWorldTile(new WorldTile(1752, 5137, 0));
@@ -182,29 +143,10 @@ public class InventoryOptionsHandler {
 			return;
 		} else if (Pots.pot(player, item, slotId))
 			return;
-		else if (itemId >= 5509 && itemId <= 5514) {
-			int pouch = -1;
-			if (itemId == 5509)
-				pouch = 0;
-			if (itemId == 5510)
-				pouch = 1;
-			if (itemId == 5512)
-				pouch = 2;
-			if (itemId == 5514)
-				pouch = 3;
-			Runecrafting.fillPouch(player, pouch);
-			return;
-		} else if (itemId == 952) {// spade
+		else if (itemId == 952) {// spade
 			dig(player);
 			return;
-		} else if (itemId == 10952) {
-			if (Slayer.isUsingBell(player))
-				return;
-		} else if (HerbCleaning.clean(player, item, slotId))
-			return;
-		else if (GemCutting.isCutting(player, itemId))
-			return;
-		else if (Bone.forId(itemId) != null) {
+		} else if (Bone.forId(itemId) != null) {
 			Bone.bury(player, slotId);
 			return;
 		} else if (Magic.useTabTeleport(player, itemId))
@@ -235,8 +177,6 @@ public class InventoryOptionsHandler {
 			player.getInterfaceManager().sendInterface(270);
 		if (itemId == AncientEffigies.SATED_ANCIENT_EFFIGY || itemId == AncientEffigies.GORGED_ANCIENT_EFFIGY || itemId == AncientEffigies.NOURISHED_ANCIENT_EFFIGY || itemId == AncientEffigies.STARVED_ANCIENT_EFFIGY)
 			player.getDialogueManager().startDialogue("AncientEffigiesD", itemId);
-		else if (itemId == 4155)
-			player.getDialogueManager().startDialogue("EnchantedGemDialouge", player.getSlayerManager().getCurrentMaster().getNPCId());
 		/*
 		 * else if (itemId == 299) { if (player.isCanPvp()) { player.getPackets()
 		 * .sendGameMessage("You cant plant a seed while doing this action."); return; } else if (World.getObjectWithSlot(player,
@@ -249,67 +189,14 @@ public class InventoryOptionsHandler {
 		 * (!player.addWalkSteps(player.getX() + 1, player.getY(), 1)) if (!player.addWalkSteps(player.getX(), player.getY() + 1, 1))
 		 * if (!player.addWalkSteps(player.getX(), player.getY() - 1, 1)) return; } }, 2);
 		 */
-		else if (itemId == 20124 || itemId == 20123 || itemId == 20122 || itemId == 20121)
-			GodswordCreating.attachKeys(player);
 		else if (itemId == 6)
 			DwarfMultiCannon.setUp(player);
 		else if (Nest.isNest(itemId))
 			Nest.searchNest(player, slotId);
-		else if (itemId == 1856) {// Information Book
-			player.getInterfaceManager().sendInterface(275);
-			player.getPackets().sendIComponentText(275, 2, Settings.SERVER_NAME);
-			player.getPackets().sendIComponentText(275, 16, "Welcome to " + Settings.SERVER_NAME + ".");
-			player.getPackets().sendIComponentText(275, 17, "If want some an item use command ::item id.");
-			player.getPackets().sendIComponentText(275, 18, "If you don't have an item list you can find ids");
-			player.getPackets().sendIComponentText(275, 19, "at http://itemdb.biz");
-			player.getPackets().sendIComponentText(275, 20, "You can change your prayers and spells at home.");
-			player.getPackets().sendIComponentText(275, 21, "If you need any help, do ::ticket. (Don't abuse it)");
-			player.getPackets().sendIComponentText(275, 22, "at start of your message on public chat.");
-			player.getPackets().sendIComponentText(275, 22, "By the way you can compare your ::score with your mates.");
-			player.getPackets().sendIComponentText(275, 23, "Oh and ye, don't forget to ::vote and respect rules.");
-			player.getPackets().sendIComponentText(275, 24, "");
-			player.getPackets().sendIComponentText(275, 25, "Forums: " + Settings.WEBSITE_LINK);
-			player.getPackets().sendIComponentText(275, 26, "");
-			player.getPackets().sendIComponentText(275, 27, "Enjoy your time on " + Settings.SERVER_NAME + ".");
-			player.getPackets().sendIComponentText(275, 28, "<img=1> Staff Team");
-			player.getPackets().sendIComponentText(275, 29, "");
-			player.getPackets().sendIComponentText(275, 30, "");
-			player.getPackets().sendIComponentText(275, 14, "<u>Visit Website</u>");
-			for (int i = 31; i < 300; i++)
-				player.getPackets().sendIComponentText(275, i, "");
-		} else if (itemId == 14057) // broomstick
+		else if (itemId == 14057) // broomstick
 			player.setNextAnimation(new Animation(10532));
-		else if (itemId == SqirkFruitSqueeze.SqirkFruit.AUTUMM.getFruitId())
-			player.getDialogueManager().startDialogue("SqirkFruitSqueeze", SqirkFruit.AUTUMM);
-		else if (itemId == SqirkFruitSqueeze.SqirkFruit.SPRING.getFruitId())
-			player.getDialogueManager().startDialogue("SqirkFruitSqueeze", SqirkFruit.SPRING);
-		else if (itemId == SqirkFruitSqueeze.SqirkFruit.SUMMER.getFruitId())
-			player.getDialogueManager().startDialogue("SqirkFruitSqueeze", SqirkFruit.SUMMER);
-		else if (itemId == SqirkFruitSqueeze.SqirkFruit.WINTER.getFruitId())
-			player.getDialogueManager().startDialogue("SqirkFruitSqueeze", SqirkFruit.WINTER);
-		else if (itemId == HunterEquipment.BOX.getId()) // almost done
-			player.getActionManager().setAction(new BoxAction(HunterEquipment.BOX));
-		else if (itemId == HunterEquipment.BRID_SNARE.getId())
-			player.getActionManager().setAction(new BoxAction(HunterEquipment.BRID_SNARE));
 		else if (item.getDefinitions().getName().startsWith("Burnt"))
 			player.getDialogueManager().startDialogue("SimplePlayerMessage", "Ugh, this is inedible.");
-		else if (item.getDefinitions().containsOption(0, "Craft") || item.getDefinitions().containsOption(0, "Fletch")) {
-			if (player.getInventory().containsItem(946, 1)) {
-				Fletch fletch = Fletching.isFletching(item, new Item(946));
-				if (fletch != null) {
-					player.getDialogueManager().startDialogue("FletchingD", fletch);
-					return;
-				}
-			} else if (player.getInventory().containsItem(1755, 1)) {
-				Fletch fletch = Fletching.isFletching(item, new Item(1755));
-				if (fletch != null) {
-					player.getDialogueManager().startDialogue("FletchingD", fletch);
-					return;
-				}
-			} else
-				player.getDialogueManager().startDialogue("ItemMessage", "You need a knife or chisle to complete the action.", 946);
-		}
-
 		if (Settings.DEBUG)
 			Logger.log("ItemHandler", "Item Select:" + itemId + ", Slot Id:" + slotId);
 	}
@@ -370,31 +257,12 @@ public class InventoryOptionsHandler {
 			player.stopAll();
 			if (!player.getControlerManager().canUseItemOnItem(itemUsed, usedWith))
 				return;
-			Fletch fletch = Fletching.isFletching(usedWith, itemUsed);
-			if (fletch != null) {
-				player.getDialogueManager().startDialogue("FletchingD", fletch);
-				return;
-			}
-			int herblore = Herblore.isHerbloreSkill(itemUsed, usedWith);
-			if (herblore > -1) {
-				player.getDialogueManager().startDialogue("HerbloreD", herblore, itemUsed, usedWith);
-				return;
-			}
-			int leatherIndex = LeatherCraftingD.getIndex(itemUsedId) == -1 ? LeatherCraftingD.getIndex(usedWithId) : LeatherCraftingD.getIndex(itemUsedId);
-			if (leatherIndex != -1 && ((itemUsedId == 1733 || usedWithId == 1733) || LeatherCraftingD.isExtraItem(usedWithId) || LeatherCraftingD.isExtraItem(itemUsedId))) {
-				player.getDialogueManager().startDialogue("LeatherCraftingD", leatherIndex);
-				return;
-			}
 			Combinations combination = Combinations.isCombining(itemUsedId, usedWithId);
 			if (combination != null) {
 				player.getDialogueManager().startDialogue("CombinationsD", combination);
 				return;
-			} else if (Firemaking.isFiremaking(player, itemUsed, usedWith))
-				return;
-			else if (AmuletAttaching.isAttaching(itemUsedId, usedWithId))
+			} else if (AmuletAttaching.isAttaching(itemUsedId, usedWithId))
 				player.getDialogueManager().startDialogue("AmuletAttaching");
-			else if (GemCutting.isCutting(player, itemUsed, usedWith))
-				return;
 			else if (TreeSaplings.hasSaplingRequest(player, itemUsedId, usedWithId)) {
 				if (itemUsedId == 5354)
 					TreeSaplings.plantSeed(player, usedWithId, fromSlot);
@@ -439,28 +307,7 @@ public class InventoryOptionsHandler {
 				player.getCharges().resetCharges(22496);
 				player.getInventory().addItem(22494, 1);
 				player.getSocialManager().sendGameMessage("You attach the polypore spores to the staff.");
-			} else if (contains(11710, 11712, itemUsed, usedWith) || contains(11710, 11714, itemUsed, usedWith) || contains(11712, 11714, itemUsed, usedWith))
-				GodswordCreating.joinPieces(player, false);
-			else if (contains(11690, 11702, itemUsed, usedWith))
-				GodswordCreating.attachHilt(player, 0);
-			else if (contains(11690, 11704, itemUsed, usedWith))
-				GodswordCreating.attachHilt(player, 1);
-			else if (contains(11690, 11706, itemUsed, usedWith))
-				GodswordCreating.attachHilt(player, 2);
-			else if (contains(11690, 11708, itemUsed, usedWith))
-				GodswordCreating.attachHilt(player, 3);
-			else if (contains(SpiritshieldCreating.HOLY_ELIXIR, SpiritshieldCreating.SPIRIT_SHIELD, itemUsed, usedWith))
-				player.getSocialManager().sendGameMessage("The shield must be blessed at an altar.");
-			else if (contains(SpiritshieldCreating.SPIRIT_SHIELD, 13746, itemUsed, usedWith) || contains(SpiritshieldCreating.SPIRIT_SHIELD, 13748, itemUsed, usedWith) || contains(SpiritshieldCreating.SPIRIT_SHIELD, 13750, itemUsed, usedWith) || contains(SpiritshieldCreating.SPIRIT_SHIELD, 13752, itemUsed, usedWith))
-				player.getSocialManager().sendGameMessage("You need a blessed spirit shield to attach the sigil to.");
-			else if (contains(SqirkFruitSqueeze.SqirkFruit.AUTUMM.getFruitId(), Herblore.PESTLE_AND_MORTAR, itemUsed, usedWith))
-				player.getDialogueManager().startDialogue("SqirkFruitSqueeze", SqirkFruit.AUTUMM);
-			else if (contains(SqirkFruitSqueeze.SqirkFruit.SPRING.getFruitId(), Herblore.PESTLE_AND_MORTAR, itemUsed, usedWith))
-				player.getDialogueManager().startDialogue("SqirkFruitSqueeze", SqirkFruit.SPRING);
-			else if (contains(SqirkFruitSqueeze.SqirkFruit.SUMMER.getFruitId(), Herblore.PESTLE_AND_MORTAR, itemUsed, usedWith))
-				player.getDialogueManager().startDialogue("SqirkFruitSqueeze", SqirkFruit.SUMMER);
-			else if (contains(SqirkFruitSqueeze.SqirkFruit.WINTER.getFruitId(), Herblore.PESTLE_AND_MORTAR, itemUsed, usedWith))
-				player.getDialogueManager().startDialogue("SqirkFruitSqueeze", SqirkFruit.WINTER);
+			}
 			else if (contains(4151, 21369, itemUsed, usedWith)) {
 				if (!player.getSkills().hasRequiriments(Skills.ATTACK, 75, Skills.SLAYER, 80)) {
 					player.getSocialManager().sendGameMessage("You need an attack level of 75 and slayer level of 80 in order to attach the whip vine to the whip.");
@@ -497,10 +344,7 @@ public class InventoryOptionsHandler {
 		if (player.isLocked() || player.getEmotesManager().isDoingEmote())
 			return;
 		player.stopAll(false);
-		FlyingEntities impJar = FlyingEntities.forId(itemId);
-		if (impJar != null)
-			Hunter.openJar(player, impJar, slotId);
-		else if (LightSource.lightSource(player, slotId))
+		if (LightSource.lightSource(player, slotId))
 			return;
 		else if (itemId == 24437 || itemId == 24439 || itemId == 24440 || itemId == 24441)
 			player.getDialogueManager().startDialogue("FlamingSkull", item, slotId);
@@ -519,8 +363,7 @@ public class InventoryOptionsHandler {
 		} else if (itemId == 4155) {
 			player.getInterfaceManager().sendInterface(1309);
 			player.getPackets().sendIComponentText(1309, 37, "List Co-Op Partner");
-		} else if (itemId == 11694 || itemId == 11696 || itemId == 11698 || itemId == 11700)
-			GodswordCreating.dismantleGS(player, item, slotId);
+		}
 		else if (itemId == 23044 || itemId == 23045 || itemId == 23046 || itemId == 23047)
 			player.getDialogueManager().startDialogue("MindSpikeD", itemId, slotId);
 		else if (item.getDefinitions().containsOption("Teleport") && ItemTransportation.transportationDialogue(player, item))
@@ -548,28 +391,6 @@ public class InventoryOptionsHandler {
 			return;
 		else if (Pots.emptyPot(player, item, slotId))
 			return;
-		else if (itemId == 1438)
-			Runecrafting.locate(player, 3127, 3405);
-		else if (itemId == 1440)
-			Runecrafting.locate(player, 3306, 3474);
-		else if (itemId == 1442)
-			Runecrafting.locate(player, 3313, 3255);
-		else if (itemId == 1444)
-			Runecrafting.locate(player, 3185, 3165);
-		else if (itemId == 1446)
-			Runecrafting.locate(player, 3053, 3445);
-		else if (itemId == 1448)
-			Runecrafting.locate(player, 2982, 3514);
-		else if (itemId == 1458)
-			Runecrafting.locate(player, 2858, 3381);
-		else if (itemId == 1454)
-			Runecrafting.locate(player, 2408, 4377);
-		else if (itemId == 1452)
-			Runecrafting.locate(player, 3060, 3591);
-		else if (itemId == 1462)
-			Runecrafting.locate(player, 2872, 3020);
-		else if (itemId == 14057)
-			SorceressGarden.teleportToSocreressGarden(player, true);
 	}
 
 	public static void handleItemOption7(Player player, int slotId, int itemId, Item item) {

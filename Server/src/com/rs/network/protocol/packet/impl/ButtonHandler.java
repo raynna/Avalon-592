@@ -10,7 +10,6 @@ import com.rs.cores.CoresManager;
 import com.rs.game.WorldTile;
 import com.rs.game.item.Item;
 import com.rs.game.minigames.CastleWars;
-import com.rs.game.minigames.PuroPuro;
 import com.rs.game.minigames.duel.DuelControler;
 import com.rs.game.minigames.pest.CommendationExchange;
 import com.rs.game.npc.familiar.Familiar;
@@ -21,31 +20,23 @@ import com.rs.game.player.Equipment;
 import com.rs.game.player.Inventory;
 import com.rs.game.player.Player;
 import com.rs.game.player.Skills;
-import com.rs.game.player.actions.FightPitsViewingOrb;
 import com.rs.game.player.actions.HomeTeleport;
 import com.rs.game.player.actions.Rest;
-import com.rs.game.player.actions.Smithing.ForgingInterface;
-import com.rs.game.player.content.Canoes;
+import com.rs.game.player.actions.combat.Magic;
 import com.rs.game.player.content.CarrierTravel;
-import com.rs.game.player.content.Enchanting;
 import com.rs.game.player.content.FairyRings;
 import com.rs.game.player.content.GnomeGlider;
 import com.rs.game.player.content.GraveStoneSelection;
 import com.rs.game.player.content.ItemConstants;
 import com.rs.game.player.content.ItemSets;
 import com.rs.game.player.content.ItemTransportation;
-import com.rs.game.player.content.JewllerySmithing;
-import com.rs.game.player.content.Magic;
 import com.rs.game.player.content.PlayerLook;
-import com.rs.game.player.content.Runecrafting;
 import com.rs.game.player.content.Shop;
 import com.rs.game.player.content.SpiritTree;
 import com.rs.game.player.content.StealingCreationShop;
 import com.rs.game.player.content.Summoning;
-import com.rs.game.player.content.construction.House;
 import com.rs.game.player.content.diary.AchievementDiary;
 import com.rs.game.player.content.grandExchange.GrandExchange;
-import com.rs.game.player.controllers.SorceressGarden;
 import com.rs.game.player.controllers.Wilderness;
 import com.rs.game.player.dialogues.impl.LevelUp;
 import com.rs.game.tasks.WorldTask;
@@ -164,43 +155,13 @@ public class ButtonHandler {
 				}
 				break;
 			}
-		} else if (interfaceId == 675) {
-			JewllerySmithing.handleButtonClick(player, componentId, packetId == 14 ? 1 : packetId == 67 ? 5 : 10);
-		} else if (interfaceId == 432) {
-			//TODO final int index = Enchanting.getComponentIndex(componentId);
-			//fif (index == -1)
-			//f	return;
-			//fEnchanting.processBoltEnchantSpell(player, index, packetId == 14 ? 1 : packetId == 67 ? 5 : 10);
 		} else if (interfaceId == 182) {
 			if (player.getInterfaceManager().containsInventoryInter())
 				return;
 			if (componentId == 6 || componentId == 9)
 				player.logout(false);
-		} else if (interfaceId == 164 || interfaceId == 161 || interfaceId == 378) {
-			player.getSlayerManager().handleRewardButtons(interfaceId, componentId);
-		} else if (interfaceId == 1310) {
-			if (componentId == 0) {
-				player.getSlayerManager().createSocialGroup(true);
-				player.setCloseInterfacesEvent(null);
-			}
-			player.closeInterfaces();
 		} else if (interfaceId == 1011) {
 			CommendationExchange.handleButtonOptions(player, componentId);
-		} else if (interfaceId == 1309) {
-			if (componentId == 20)
-				player.getSocialManager().sendGameMessage("Use your enchanted stone ring onto the player that you would like to invite.", true);
-			else if (componentId == 22) {
-				Player p2 = player.getSlayerManager().getSocialPlayer();
-				if (p2 == null)
-					player.getSocialManager().sendGameMessage("You have no slayer group, invite a player to start one.");
-				else
-					player.getSocialManager().sendGameMessage("Your current slayer group consists of you and " + p2.getDisplayName() + ".");
-			} else if (componentId == 24)
-				player.getSlayerManager().resetSocialGroup(true);
-			player.closeInterfaces();
-		} else if (interfaceId == 1165) {
-			// if (componentId == 22)
-			// Summoning.closeDreadnipInterface(player);
 		} else if (interfaceId == 1128) {
 			int index = -1;
 			if (componentId == 98 || componentId == 4)
@@ -299,13 +260,6 @@ public class ButtonHandler {
 						player.getFamiliar().submitSpecial(player);
 				}
 			}
-		} else if (interfaceId == 540) {
-			if (componentId == 69)
-				PuroPuro.confirmPuroSelection(player);
-			else if (componentId == 71)
-				ShopsHandler.openShop(player, 54);
-			else
-				PuroPuro.handlePuroInterface(player, componentId);
 		} else if (interfaceId == 138) {
 			int selectedComponent = componentId - 23;
 			if (selectedComponent == 0 || player.getTemporaryAttributtes().get("using_carrier") != null)
@@ -322,26 +276,7 @@ public class ButtonHandler {
 				FairyRings.handleDialButtons(player, componentId);
 		} else if (interfaceId == 728)
 			PlayerLook.handleYrsaShoes(player, componentId, slotId);
-		else if (interfaceId == 52) {
-			if (componentId >= 30 && componentId <= 34) {
-				player.getTemporaryAttributtes().put("selected_canoe", componentId - 30);
-				Canoes.createShapedCanoe(player);
-			}
-		} else if (interfaceId == 53) {
-			int selectedArea = -1;
-			if (componentId == 47)
-				selectedArea = 0;
-			else if (componentId == 48)
-				selectedArea = 1;
-			else if (componentId == 3)
-				selectedArea = 2;
-			else if (componentId == 6)
-				selectedArea = 3;
-			else if (componentId == 49)
-				selectedArea = 4;
-			if (selectedArea != -1)
-				Canoes.deportCanoeStation(player, selectedArea);
-		} else if (interfaceId == 735) {
+		else if (interfaceId == 735) {
 			if (componentId >= 14 && componentId <= 14 + 64)
 				FairyRings.sendRingTeleport(player, componentId - 14);
 		} else if (interfaceId == 95) {
@@ -466,8 +401,6 @@ public class ButtonHandler {
 				else if (packetId == WorldPacketsDecoder.ACTION_BUTTON8_PACKET)
 					player.getInventory().sendExamine(slotId);
 			}
-		} else if (interfaceId == 300) {
-			ForgingInterface.handleIComponents(player, componentId);
 		} else if (interfaceId == 206) {
 			if (componentId == 18) {
 				if (packetId == WorldPacketsDecoder.ACTION_BUTTON1_PACKET)
@@ -638,23 +571,6 @@ public class ButtonHandler {
 		} else if (interfaceId == 429) {
 			if (componentId == 18)
 				player.getInterfaceManager().sendSettings();
-		} else if (interfaceId == 398) {
-			if (componentId == 19)
-				player.getInterfaceManager().sendSettings();
-			else if (componentId == 15 || componentId == 1)
-				player.getHouse().setBuildMode(componentId == 15);
-			else if (componentId == 25 || componentId == 26)
-				player.getHouse().setArriveInPortal(componentId == 25);
-			else if (componentId == 27)
-				player.getHouse().expelGuests();
-			else if (componentId == 29)
-				House.leaveHouse(player);
-		} else if (interfaceId == 402) {
-			if (componentId >= 93 && componentId <= 115)
-				player.getHouse().createRoom(componentId - 93);
-		} else if (interfaceId == 394 || interfaceId == 396) {
-			if (componentId == 11)
-				player.getHouse().build(slotId);
 		} else if (interfaceId == 982) {
 			if (componentId == 5)
 				player.getInterfaceManager().sendSettings();
@@ -970,8 +886,6 @@ public class ButtonHandler {
 						player.getCharges().checkCharges(player.getEquipment().getItem(3).getName() + ": has ## shots remaining.", weaponId);
 					} else if (weaponId == 15484)
 						player.getInterfaceManager().gazeOrbOfOculus();
-					else if (weaponId == 14057) // broomstick
-						SorceressGarden.teleportToSocreressGarden(player, true);
 				} else if (packetId == WorldPacketsDecoder.ACTION_BUTTON1_PACKET)
 					ButtonHandler.sendRemove(player, Equipment.SLOT_WEAPON);
 				else if (packetId == WorldPacketsDecoder.ACTION_BUTTON8_PACKET)
@@ -1358,12 +1272,7 @@ public class ButtonHandler {
 			player.getFriendsIgnores().handleFriendChatButtons(interfaceId, componentId, packetId);
 		} else if (interfaceId == 1079)
 			player.closeInterfaces();
-		else if (interfaceId == 374) {
-			if (componentId >= 5 && componentId <= 9)
-				player.setNextWorldTile(new WorldTile(FightPitsViewingOrb.ORB_TELEPORTS[componentId - 5]));
-			else if (componentId == 15)
-				player.stopAll();
-		} else if (interfaceId == 105 || interfaceId == 107 || interfaceId == 109 || interfaceId == 449)
+		else if (interfaceId == 105 || interfaceId == 107 || interfaceId == 109 || interfaceId == 449)
 			player.getGeManager().handleButtons(interfaceId, componentId, slotId, packetId);
 		else if (interfaceId == 1092) {
 			player.stopAll();
@@ -1440,8 +1349,6 @@ public class ButtonHandler {
 		player.getEquipment().getItems().set(slotId, null);
 		player.getEquipment().refresh(slotId);
 		player.getAppearence().generateAppearenceData();
-		if (Runecrafting.isTiara(item.getId()))
-			player.getVarsManager().sendVar(491, 0);
 		if (slotId == 3)
 			player.getCombatDefinitions().desecreaseSpecialAttack(0);
 	}

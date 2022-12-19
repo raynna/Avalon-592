@@ -2,7 +2,6 @@ package com.rs.game.player.content;
 
 import com.rs.game.item.Item;
 import com.rs.game.player.Player;
-import com.rs.game.player.controllers.UnderGroundDungeon;
 
 public class LightSource {
 
@@ -50,7 +49,7 @@ public class LightSource {
 		int slot = getSlot(item.getId(), false);
 		if (slot == -1)
 			return false;
-		else if (!forceExtinguish && player.getControlerManager().getControler() != null && player.getControlerManager().getControler() instanceof UnderGroundDungeon) {
+		else if (!forceExtinguish && player.getControlerManager().getControler() != null) {
 			player.getSocialManager().sendGameMessage("You cannot extinguish the " + item.getName().toLowerCase() + " as you will not have a light source.");
 			return false;
 		}

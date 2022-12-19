@@ -6,46 +6,28 @@ import com.rs.game.World;
 import com.rs.game.WorldTile;
 import com.rs.game.item.Item;
 import com.rs.game.minigames.CastleWars;
-import com.rs.game.minigames.PuroPuro;
 import com.rs.game.minigames.pest.CommendationExchange;
 import com.rs.game.npc.NPC;
 import com.rs.game.npc.familiar.Familiar;
 import com.rs.game.npc.familiar.Pyrelord;
-import com.rs.game.npc.others.ConditionalDeath;
 import com.rs.game.npc.others.FireSpirit;
 import com.rs.game.npc.others.GraveStone;
-import com.rs.game.npc.others.LivingRock;
-import com.rs.game.npc.others.MutatedZygomites;
 import com.rs.game.npc.others.Pet;
 import com.rs.game.npc.others.Strykewyrm;
 import com.rs.game.player.Player;
 import com.rs.game.player.QuestManager.Quests;
 import com.rs.game.player.RouteEvent;
-import com.rs.game.player.SlayerManager;
-import com.rs.game.player.actions.Fishing;
-import com.rs.game.player.actions.Fishing.FishingSpots;
 import com.rs.game.player.actions.Rest;
-import com.rs.game.player.actions.mining.LivingMineralMining;
-import com.rs.game.player.actions.mining.MiningBase;
-import com.rs.game.player.actions.runecrafting.SiphonActionCreatures;
-import com.rs.game.player.actions.thieving.PickPocketAction;
-import com.rs.game.player.actions.thieving.PickPocketableNPC;
-import com.rs.game.player.content.AbbysObsticals;
 import com.rs.game.player.content.CarrierTravel;
 import com.rs.game.player.content.CarrierTravel.Carrier;
 import com.rs.game.player.content.EconomyManager;
 import com.rs.game.player.content.GnomeGlider;
-import com.rs.game.player.content.Hunter;
 import com.rs.game.player.content.ItemConstants;
 import com.rs.game.player.content.ItemSets;
 import com.rs.game.player.content.PlayerLook;
 import com.rs.game.player.content.SheepShearing;
-import com.rs.game.player.content.Slayer.SlayerMaster;
-import com.rs.game.player.content.SpiritshieldCreating;
 import com.rs.game.player.content.StealingCreationShop;
 import com.rs.game.player.content.Summoning.Pouch;
-import com.rs.game.player.controllers.RuneEssenceController;
-import com.rs.game.player.controllers.SorceressGarden;
 import com.rs.game.player.dialogues.impl.BoatingDialouge;
 import com.rs.game.player.dialogues.impl.FremennikShipmaster;
 import com.rs.io.InputStream;
@@ -86,8 +68,6 @@ public class NPCHandler {
 			}, true));
 			return;
 		}
-		if (SiphonActionCreatures.siphon(player, npc))
-			return;
 		player.setRouteEvent(new RouteEvent(npc, new Runnable() {
 			@Override
 			public void run() {
@@ -95,14 +75,7 @@ public class NPCHandler {
 				player.faceEntity(npc);
 				if (!player.getControlerManager().processNPCClick1(npc))
 					return;
-				FishingSpots spot = FishingSpots.forId(npc.getId() | 1 << 24);
-				if (spot != null) {
-					player.getActionManager().setAction(new Fishing(spot, npc));
-					return; // its a spot, they wont face us
-				} else if (npc.getId() >= 8837 && npc.getId() <= 8839) {
-					player.getActionManager().setAction(new LivingMineralMining((LivingRock) npc));
-					return;
-				} else if (npc instanceof Familiar) {
+				if (npc instanceof Familiar) {
 					Familiar familiar = (Familiar) npc;
 					if (player.getFamiliar() != familiar) {
 						player.getSocialManager().sendGameMessage("That isn't your familiar.");
@@ -206,8 +179,6 @@ public class NPCHandler {
 					player.getDialogueManager().startDialogue("FatherAereck", npc.getId());
 				else if (npc.getId() == 1793)
 					player.getDialogueManager().startDialogue("CraftingMaster", npc.getId());
-				else if (npc.getId() == 3344 || npc.getId() == 3345)
-					MutatedZygomites.transform(player, npc);
 				else if (npc.getId() == 11270)
 					ShopsHandler.openShop(player, 19);
 				else if (npc.getId() == 562)// 107
@@ -296,8 +267,6 @@ public class NPCHandler {
 					player.getDialogueManager().startDialogue("SaniBoch", false);
 				else if (npc.getId() == 15149)
 					player.getDialogueManager().startDialogue("MasterOfFear", 0);
-				else if (SlayerMaster.startInteractionForId(player, npc.getId(), 1))
-					return;
 				else if (npc.getId() == 1282)
 					player.getDialogueManager().startDialogue("EcoTestDialog", false);
 				else if (npc.getId() == 11519)
@@ -310,9 +279,7 @@ public class NPCHandler {
 					player.getDialogueManager().startDialogue("RepairSquire");
 				else if (npc.getId() == 3790 || npc.getId() == 3791 || npc.getId() == 3792)
 					player.getDialogueManager().startDialogue("VoidKnightExchange", npc.getId());
-				else if (npc.getName().toLowerCase().contains("impling")) {
-					Hunter.captureFlyingEntity(player, npc);
-				} else if (npc instanceof Pet) {
+				else if (npc instanceof Pet) {
 					Pet pet = (Pet) npc;
 					if (pet != player.getPet()) {
 						player.getSocialManager().sendGameMessage("This isn't your pet.");
@@ -400,16 +367,7 @@ public class NPCHandler {
 			public void run() {
 				npc.resetWalkSteps();
 				player.faceEntity(npc);
-				FishingSpots spot = FishingSpots.forId(npc.getId() | (2 << 24));
-				if (spot != null) {
-					player.getActionManager().setAction(new Fishing(spot, npc));
-					return;
-				}
-				PickPocketableNPC pocket = PickPocketableNPC.get(npc.getId());
-				if (pocket != null) {
-					player.getActionManager().setAction(new PickPocketAction(npc, pocket));
-					return;
-				} else if (npc instanceof Familiar) {
+				if (npc instanceof Familiar) {
 					Familiar familiar = (Familiar) npc;
 					if (player.getFamiliar() != familiar) {
 						player.getSocialManager().sendGameMessage("That isn't your familiar.");
@@ -468,12 +426,8 @@ public class NPCHandler {
 					FremennikShipmaster.sail(player, true);
 				else if (npc.getId() == 9708)
 					FremennikShipmaster.sail(player, false);
-				else if (SlayerMaster.startInteractionForId(player, npc.getId(), 2))
-					return;
 				else if (npc.getId() == 2619 || npc.getId() == 13455 || npc.getId() == 2617 || npc.getId() == 2618 || npc.getId() == 15194)
 					player.getBank().openBank();
-				else if (npc.getId() == 14849 && npc instanceof ConditionalDeath)
-					((ConditionalDeath) npc).useHammer(player);
 				else if (npc.getId() == 528 || npc.getId() == 529)
 					ShopsHandler.openShop(player, 1);
 				else if (npc.getId() == 3799)
@@ -670,8 +624,6 @@ public class NPCHandler {
 					ShopsHandler.openShop(player, 17);
 				else if (npc.getId() == 4563) // Crossbow Shop
 					ShopsHandler.openShop(player, 33);
-				else if (npc.getId() == 6070)
-					PuroPuro.openPuroInterface(player);
 				else if (npc.getId() == 904)
 					ShopsHandler.openShop(player, 37);
 				else if (npc.getId() == 1303)
@@ -696,16 +648,12 @@ public class NPCHandler {
 					ShopsHandler.openShop(player, 41);
 				else if (npc.getId() == 15149)
 					player.getDialogueManager().startDialogue("MasterOfFear", 3);
-				else if (npc.getId() == 462) // Aubury
-					RuneEssenceController.teleport(player, npc);
 				else if (npc.getId() == 2676)
 					PlayerLook.openMageMakeOver(player);
 				else if (npc.getId() == 598)
 					PlayerLook.openHairdresserSalon(player);
 				else if (npc.getId() == 1282)
 					player.getDialogueManager().startDialogue("EcoTestDialog", true);
-				else if (npc.getId() == 171) // Brimstail
-					RuneEssenceController.teleport(player, npc);
 				else if (npc instanceof Pet) {
 					if (npc != player.getPet()) {
 						player.getSocialManager().sendGameMessage("This isn't your pet!");
@@ -783,10 +731,7 @@ public class NPCHandler {
 				if (!player.getControlerManager().processNPCClick3(npc))
 					return;
 				player.faceEntity(npc);
-				if (npc.getId() >= 8837 && npc.getId() <= 8839) {
-					MiningBase.propect(player, "You examine the remains...", "The remains contain traces of living minerals.");
-					return;
-				} else if (npc.getDefinitions().hasOption("Charter")) {
+				if (npc.getDefinitions().hasOption("Charter")) {
 					CarrierTravel.openCharterInterface(player);
 					return;
 				} else if (npc instanceof GraveStone) {
@@ -795,9 +740,7 @@ public class NPCHandler {
 					return;
 				}
 				npc.faceEntity(player);
-				if (SlayerMaster.startInteractionForId(player, npc.getId(), 3))
-					ShopsHandler.openShop(player, 29);
-				else if (npc.getId() == 2619)
+				if (npc.getId() == 2619)
 					player.getGeManager().openCollectionBox();
 				else if (npc.getId() == 1526)
 					CastleWars.openCastleWarsTicketExchange(player);
@@ -807,12 +750,8 @@ public class NPCHandler {
 					PlayerLook.openThessaliasMakeOver(player);
 				else if (npc.getId() == 1301)
 					PlayerLook.openYrsaShop(player);
-				else if (npc.getId() == 2259)
-					AbbysObsticals.teleport(player, npc);
 				else if (npc.getId() == 4287)
 					player.getDialogueManager().startDialogue("GamfriedShield");
-				else if (npc.getId() == 5532)
-					SorceressGarden.teleportToSorceressGardenNPC(npc, player);
 				else if (npc.getId() == 1334) // Book Shop
 					ShopsHandler.openShop(player, 35);
 				else if (npc.getId() == 5913) // Aubury
@@ -865,16 +804,12 @@ public class NPCHandler {
 					ShopsHandler.openShop(player, 39);
 				else if (npc.getId() == 6070)
 					ShopsHandler.openShop(player, 54);
-				else if (npc.getId() == 5913) // Aubury
-					RuneEssenceController.teleport(player, npc);
 				else if (npc.getId() == 14872)
 					player.getDialogueManager().startDialogue("KillingQuickD");
 				else if (npc.getId() == 5110) // Aleck's Hunter Emporium
 					ShopsHandler.openShop(player, 56);
 				else if (npc.getId() == 14854) // Poletax's Herblore Shop
 					ShopsHandler.openShop(player, 68);
-				else if (SlayerMaster.startInteractionForId(player, npc.getId(), 4))
-					player.getSlayerManager().sendSlayerInterface(SlayerManager.BUY_INTERFACE);
 				else
 					player.getSocialManager().sendGameMessage("Nothing interesting happens.");
 			}
@@ -919,13 +854,7 @@ public class NPCHandler {
 					player.faceEntity(npc);
 					player.getPetManager().eat(item.getId(), (Pet) npc);
 					return;
-				} else if (npc instanceof ConditionalDeath)
-					((ConditionalDeath) npc).useHammer(player);
-				else if (item.getId() == SpiritshieldCreating.SPIRIT_SHIELD || item.getId() == SpiritshieldCreating.HOLY_ELIXIR && npc.getId() == 802) {
-					SpiritshieldCreating.blessShield(player, false);
-				} else if (npc.getId() == 7729 && SpiritshieldCreating.isSigil(item.getId()))
-					SpiritshieldCreating.attachShield(player, item, false);
-				else if ((npc.getId() == 519 || npc.getId() == 3797) && ItemConstants.repairItem(player, player.getInventory().getItems().getThisItemSlot(item)))
+				} else if ((npc.getId() == 519 || npc.getId() == 3797) && ItemConstants.repairItem(player, player.getInventory().getItems().getThisItemSlot(item)))
 					return;
 				else
 					player.getSocialManager().sendGameMessage("Nothing interesting happens.");

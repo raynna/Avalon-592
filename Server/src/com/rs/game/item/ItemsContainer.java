@@ -276,6 +276,17 @@ public final class ItemsContainer<T extends Item> implements Serializable {
 		return getFreeSlot();
 	}
 
+	public int getThisItemSlot(int itemId) {
+		for (int i = 0; i < data.length; i++) {
+			if (data[i] != null) {
+				if (data[i].getId() == itemId) {
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
+
 	public Item lookup(int id) {
 		for (Item aData : data) {
 			if (aData == null) {

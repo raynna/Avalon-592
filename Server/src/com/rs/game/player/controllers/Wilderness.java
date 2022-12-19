@@ -9,7 +9,6 @@ import com.rs.game.WorldTile;
 import com.rs.game.npc.NPC;
 import com.rs.game.player.Player;
 import com.rs.game.player.Skills;
-import com.rs.game.player.actions.thieving.Thieving;
 import com.rs.game.tasks.WorldTask;
 import com.rs.game.tasks.WorldTasksManager;
 import com.rs.utils.Utils;
@@ -178,10 +177,6 @@ public class Wilderness extends Controller {
 
 	@Override
 	public boolean processObjectClick2(final WorldObject object) {
-		if (object.getId() == 2557 || object.getId() == 65717) {
-			Thieving.pickDoor(player, object);
-			return false;
-		}
 		return true;
 	}
 

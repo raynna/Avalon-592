@@ -1,7 +1,6 @@
 package com.rs.game.player.dialogues.impl;
 
 import com.rs.game.npc.NPC;
-import com.rs.game.player.controllers.RuneEssenceController;
 import com.rs.game.player.dialogues.Dialogue;
 
 public class Brimstail extends Dialogue {
@@ -60,7 +59,6 @@ public class Brimstail extends Dialogue {
 			stage = 9;
 		} else if (stage == 9) {
 			sendNPCDialogue(npcId, NORMAL, "Okay. Hold onto your hat!");
-			RuneEssenceController.teleport(player, (NPC) this.parameters[0]);
 			stage = 15;
 		} else if (stage == 10) {
 			sendNPCDialogue(npcId, NORMAL, "Why of course!");

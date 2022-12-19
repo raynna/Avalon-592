@@ -8,7 +8,6 @@ import com.rs.game.WorldTile;
 import com.rs.game.npc.NPC;
 import com.rs.game.npc.familiar.Familiar;
 import com.rs.game.npc.fightcaves.FightCavesNPC;
-import com.rs.game.npc.godwars.zaros.Nex;
 import com.rs.game.npc.pest.PestPortal;
 import com.rs.game.player.Player;
 import com.rs.game.player.content.Combat;
@@ -75,8 +74,7 @@ public final class NPCCombat {
 				: npc instanceof FightCavesNPC && attackStyle == NPCCombatDefinitions.SPECIAL ? 14 : 7;
 		if (target.hasWalkSteps())
 			maxDistance += 1;
-		if ((!(npc instanceof Nex))
-				&& !npc.clipedProjectile(target, maxDistance == 0 && !forceCheckClipAsRange(target))) {
+		if (!npc.clipedProjectile(target, maxDistance == 0 && !forceCheckClipAsRange(target))) {
 			return 0;
 		}
 		int size = npc.getSize();
@@ -218,35 +216,6 @@ public final class NPCCombat {
 			}
 
 			int attackStyle = npc.getCombatDefinitions().getAttackStyle();
-			if (npc instanceof Nex) {
-				Nex nex = (Nex) npc;
-				maxDistance = nex.isForceFollowClose() ? 0 : 7;
-				if ((!npc.clipedProjectile(target, maxDistance == 0 && !forceCheckClipAsRange(target)))
-						|| !Utils.isOnRange(npc.getX(), npc.getY(), size, target.getX(), target.getY(), targetSize,
-						maxDistance)) {
-					npc.resetWalkSteps();
-					if (!Utils.isOnRange(npc.getX(), npc.getY(), size, target.getX(), target.getY(), targetSize, 10)) {
-						int[][] dirs = Utils.getCoordOffsetsNear(size);
-						for (int dir = 0; dir < dirs[0].length; dir++) {
-							final WorldTile tile = new WorldTile(new WorldTile(target.getX() + dirs[0][dir],
-									target.getY() + dirs[1][dir], target.getPlane()));
-							if (World.isTileFree(tile.getPlane(), tile.getX(), tile.getY(), size)) { // if
-								// found
-								// done
-								npc.setNextForceMovement(new ForceMovement(new WorldTile(npc), 0, tile, 1,
-										Utils.getMoveDirection(tile.getX() - npc.getX(), tile.getY() - npc.getY())));
-								npc.animate(new Animation(17408));
-								npc.setNextWorldTile(tile);
-								return true;
-							}
-						}
-					} else
-						npc.calcFollow(target, 2, true, npc.isIntelligentRouteFinder());
-					return true;
-				} else
-					// if doesnt need to move more stop moving
-					npc.resetWalkSteps();
-			} else {
 				// MAGE_FOLLOW and RANGE_FOLLOW follow close but can attack far
 				// unlike melee
 				maxDistance = npc.isForceFollowClose() ? 0
@@ -261,7 +230,6 @@ public final class NPCCombat {
 						if (!npc.calcFollow(target, npc.getRun() ? 2 : 1, true, npc.isIntelligentRouteFinder())) {
 							return true;
 						}
-				}
 			}
 		}
 		return true;

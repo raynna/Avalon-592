@@ -8,8 +8,6 @@ import com.rs.game.item.FloorItem;
 import com.rs.game.item.Item;
 import com.rs.game.player.Player;
 import com.rs.game.player.Skills;
-import com.rs.game.player.actions.Firemaking;
-import com.rs.game.player.actions.Firemaking.Fire;
 import com.rs.game.player.content.Summoning.Pouch;
 import com.rs.game.tasks.WorldTask;
 import com.rs.game.tasks.WorldTasksManager;
@@ -53,9 +51,9 @@ public class Pyrelord extends Familiar {
 		return false;
 	}
 
-	public static boolean lightLog(final Familiar familiar, final Item item) {
+	public static boolean lightLog(final Familiar familiar, final Item item) {//TODO ADD LIGHT LOGS
 		final Player player = familiar.getOwner();
-		final Fire fire = Firemaking.getFire(item.getId());
+		/*final Fire fire = Firemaking.getFire(item.getId());
 		if (fire == null)
 			return false;
 		Long time = (Long) familiar.getTemporaryAttributtes().get("Fire");
@@ -90,7 +88,7 @@ public class Pyrelord extends Familiar {
 					familiar.getTemporaryAttributtes().put("Fire", Utils.currentTimeMillis() + 1800);
 				}
 			}, 2);
-		}
+		}*/
 		return true;
 	}
 }

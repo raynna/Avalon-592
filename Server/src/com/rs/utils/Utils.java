@@ -15,6 +15,7 @@ import java.util.Random;
 
 import com.rs.Settings;
 import com.rs.cache.Cache;
+import com.rs.game.World;
 import com.rs.game.WorldTile;
 import com.rs.game.player.Player;
 import com.rs.game.player.Skills;
@@ -32,6 +33,23 @@ public final class Utils {
 		return new Random().nextInt(max) + min;
 	}
 
+	public static final int[] DOOR_ROTATION_DIR_X = { -1, 0, 1, 0 };
+
+	public static final int[] DOOR_ROTATION_DIR_Y = { 0, 1, 0, -1 };
+	public static final int getAngle(int xOffset, int yOffset) {
+		return ((int) (Math.atan2(-xOffset, -yOffset) * 2607.5945876176133)) & 0x3fff;
+	}
+
+
+	public static WorldTile getFreeTile(WorldTile center, int distance) {
+		WorldTile tile = center;
+		for (int i = 0; i < 10; i++) {
+			tile = new WorldTile(center, distance);
+			if (World.isTileFree(tile.getPlane(), tile.getX(), tile.getY(), 1))
+				return tile;
+		}
+		return center;
+	}
 	/**
 	 * Get a random number as a percentile.
 	 *

@@ -2,6 +2,7 @@ package com.rs.game.player.content;
 
 import com.rs.game.WorldTile;
 import com.rs.game.player.Player;
+import com.rs.game.player.actions.combat.Magic;
 
 public class SpiritTree {
 

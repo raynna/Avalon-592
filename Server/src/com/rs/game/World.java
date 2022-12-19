@@ -12,10 +12,7 @@ import com.rs.Settings;
 import com.rs.cores.CoresManager;
 import com.rs.game.item.FloorItem;
 import com.rs.game.item.Item;
-import com.rs.game.minigames.GodWarsBosses;
-import com.rs.game.minigames.PuroPuro;
 import com.rs.game.minigames.WarriorsGuild;
-import com.rs.game.minigames.ZarosGodwars;
 import com.rs.game.minigames.clanwars.FfaZone;
 import com.rs.game.minigames.clanwars.RequestController;
 import com.rs.game.minigames.duel.DuelControler;
@@ -23,31 +20,12 @@ import com.rs.game.npc.NPC;
 import com.rs.game.npc.corp.CorporealBeast;
 import com.rs.game.npc.dragons.KingBlackDragon;
 import com.rs.game.npc.glacior.Glacor;
-import com.rs.game.npc.godwars.GodWarMinion;
-import com.rs.game.npc.godwars.armadyl.GodwarsArmadylFaction;
-import com.rs.game.npc.godwars.armadyl.KreeArra;
-import com.rs.game.npc.godwars.bandos.GeneralGraardor;
-import com.rs.game.npc.godwars.bandos.GodwarsBandosFaction;
-import com.rs.game.npc.godwars.saradomin.CommanderZilyana;
-import com.rs.game.npc.godwars.saradomin.GodwarsSaradominFaction;
-import com.rs.game.npc.godwars.zammorak.GodwarsZammorakFaction;
-import com.rs.game.npc.godwars.zammorak.KrilTstsaroth;
-import com.rs.game.npc.godwars.zaros.Nex;
-import com.rs.game.npc.godwars.zaros.NexMinion;
-import com.rs.game.npc.godwars.zaros.ZarosMinion;
 import com.rs.game.npc.nomad.FlameVortex;
 import com.rs.game.npc.nomad.Nomad;
 import com.rs.game.npc.others.AbyssalDemon;
-import com.rs.game.npc.others.BanditCampBandits;
 import com.rs.game.npc.others.Bork;
-import com.rs.game.npc.others.ConditionalDeath;
-import com.rs.game.npc.others.Cyclopse;
 import com.rs.game.npc.others.EconomyManager;
-import com.rs.game.npc.others.Elemental;
 import com.rs.game.npc.others.HarpieBug;
-import com.rs.game.npc.others.HoleInTheWall;
-import com.rs.game.npc.others.ItemHunterNPC;
-import com.rs.game.npc.others.Jadinko;
 import com.rs.game.npc.others.KalphiteQueen;
 import com.rs.game.npc.others.Kurask;
 import com.rs.game.npc.others.LivingRock;
@@ -55,7 +33,6 @@ import com.rs.game.npc.others.Lucien;
 import com.rs.game.npc.others.MasterOfFear;
 import com.rs.game.npc.others.MercenaryMage;
 import com.rs.game.npc.others.MiladeDeath;
-import com.rs.game.npc.others.MutatedZygomites;
 import com.rs.game.npc.others.Revenant;
 import com.rs.game.npc.others.RockCrabs;
 import com.rs.game.npc.others.Sheep;
@@ -65,11 +42,7 @@ import com.rs.game.npc.others.Werewolf;
 import com.rs.game.player.OwnedObjectManager;
 import com.rs.game.player.Player;
 import com.rs.game.player.Skills;
-import com.rs.game.player.actions.BoxAction.HunterNPC;
-import com.rs.game.player.actions.runecrafting.SiphionActionNodes;
 import com.rs.game.player.content.ItemConstants;
-import com.rs.game.player.content.LivingRockCavern;
-import com.rs.game.player.controllers.JadinkoLair;
 import com.rs.game.player.controllers.Wilderness;
 import com.rs.game.route.Flags;
 import com.rs.utils.AntiFlood;
@@ -121,11 +94,7 @@ public final class World {
 		addOwnedObjectsTask();
 		if (Settings.XP_BONUS_ENABLED)
 			addIncreaseElapsedBonusMinutesTak();
-		LivingRockCavern.init();
-		SiphionActionNodes.init();
-		PuroPuro.initPuroImplings();
 		WarriorsGuild.init();
-		JadinkoLair.init();
 		// SlaughterFieldsControler.load();
 	}
 
@@ -342,17 +311,8 @@ public final class World {
 
 	public static final NPC spawnNPC(int id, WorldTile tile, int mapAreaNameHash, boolean canBeAttackFromOutOfArea, boolean spawned) {
 		NPC n = null;
-		HunterNPC hunterNPCs = HunterNPC.forId(id);
-		if (hunterNPCs != null && id == hunterNPCs.getNpcId())
-			n = new ItemHunterNPC(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id >= 5533 && id <= 5558)
-			n = new Elemental(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 1926 || id == 1931)
-			n = new BanditCampBandits(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 14872)
+		if (id == 14872)
 			n = new MiladeDeath(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
-		else if (id == 6078 || id == 6079 || id == 4292 || id == 4291 || id == 6080 || id == 6081)
-			n = new Cyclopse(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
 		else if (id == 7134)
 			n = new Bork(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
 		else if (id == 9441)
@@ -365,36 +325,8 @@ public final class World {
 			n = new KalphiteQueen(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
 		else if (id >= 8528 && id <= 8532)
 			n = new Nomad(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 13456 || id == 13457 || id == 13458 || id == 13459)
-			n = new ZarosMinion(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
-		else if (id == 6261 || id == 6263 || id == 6265)
-			n = GodWarsBosses.graardorMinions[(id - 6261) / 2] = new GodWarMinion(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 6260)
-			n = new GeneralGraardor(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 6222)
-			n = new KreeArra(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 6223 || id == 6225 || id == 6227 || id == 6081)
-			n = GodWarsBosses.armadylMinions[(id - 6223) / 2] = new GodWarMinion(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 6203)
-			n = new KrilTstsaroth(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 6204 || id == 6206 || id == 6208)
-			n = GodWarsBosses.zamorakMinions[(id - 6204) / 2] = new GodWarMinion(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 6248 || id == 6250 || id == 6252)
-			n = GodWarsBosses.commanderMinions[(id - 6248) / 2] = new GodWarMinion(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 6247)
-			n = new CommanderZilyana(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id >= 6210 && id <= 6221)
-			n = new GodwarsZammorakFaction(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id >= 6254 && id <= 6259)
-			n = new GodwarsSaradominFaction(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id >= 6268 && id <= 6283)
-			n = new GodwarsBandosFaction(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id >= 6228 && id <= 6246)
-			n = new GodwarsArmadylFaction(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
 		else if (id == 1615)
 			n = new AbyssalDemon(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
-		else if (id == 2058)
-			n = new HoleInTheWall(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
 		else if (id == 50 || id == 2642)
 			n = new KingBlackDragon(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
 		else if (id >= 9462 && id <= 9467)
@@ -405,16 +337,6 @@ public final class World {
 			n = new RockCrabs(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
 		else if (id == 8133)
 			n = new CorporealBeast(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 13447)
-			n = ZarosGodwars.nex = new Nex(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
-		else if (id == 13451)
-			n = new NexMinion(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 13452)
-			n = new NexMinion(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 13453)
-			n = new NexMinion(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 13454)
-			n = new NexMinion(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
 		else if (id == 14256)
 			n = new Lucien(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
 		else if (id == 1282) {
@@ -428,26 +350,12 @@ public final class World {
 			n = new TormentedDemon(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
 		else if (id == 15149)
 			n = new MasterOfFear(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
-		else if (id == 1631 || id == 1632)
-			n = new ConditionalDeath(4161, "The rockslug shrivels and dies.", true, id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
 		else if (id == 14301)
 			n = new Glacor(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
-		else if (id == 1610)
-			n = new ConditionalDeath(4162, "The gargoyle breaks into peices as you slam the hammer onto its head.", false, id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
-		else if (id == 14849)
-			n = new ConditionalDeath(23035, null, false, id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
-		else if (id == 1627 || id == 1628 || id == 1629 || id == 1630)
-			n = new ConditionalDeath(4158, null, false, id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
-		else if (id >= 2803 && id <= 2808)
-			n = new ConditionalDeath(6696, null, true, id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
 		else if (id == 1609 || id == 1610)
 			n = new Kurask(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
 		else if (id == 3153)
 			n = new HarpieBug(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
-		else if (id == 3344 || id == 3345 || id == 3346 || id == 3347)
-			n = new MutatedZygomites(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
-		else if (id == 13820 || id == 13821 || id == 13822)
-			n = new Jadinko(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea);
 		else if (com.rs.game.player.content.EconomyManager.isEconomyManagerNpc(id)) {
 			n = new EconomyManager(id, tile, mapAreaNameHash, canBeAttackFromOutOfArea, spawned);
 			n.setLocked(true);
@@ -1938,5 +1846,34 @@ public final class World {
 						receiver instanceof Player ? startOffsetDistance : startOffsetDistance, size);
 			}
 		}
+	}
+
+	public static void executeAfterLoadRegion(final int regionId, final Runnable event) {
+		executeAfterLoadRegion(regionId, 0, event);
+	}
+
+	public static void executeAfterLoadRegion(final int regionId, long startTime, final Runnable event) {
+		executeAfterLoadRegion(regionId, startTime, 10000, event);
+	}
+
+	public static void executeAfterLoadRegion(final int regionId, long startTime, final long expireTime,
+											  final Runnable event) {
+		final long start = Utils.currentTimeMillis();
+		World.getRegion(regionId, true); // forces check load if not loaded
+		CoresManager.fastExecutor.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				try {
+					if (!World.isRegionLoaded(regionId) && Utils.currentTimeMillis() - start < expireTime)
+						return;
+					event.run();
+					cancel();
+				} catch (Throwable e) {
+					e.printStackTrace();
+				}
+			}
+
+		}, startTime, 600);
 	}
 }

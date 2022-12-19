@@ -10,6 +10,7 @@ import com.rs.game.World;
 import com.rs.game.WorldTile;
 import com.rs.game.npc.NPC;
 import com.rs.game.player.Player;
+import com.rs.game.player.actions.combat.Magic;
 import com.rs.game.player.dialogues.Dialogue;
 import com.rs.utils.DisplayNames;
 import com.rs.utils.PkRank;

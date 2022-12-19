@@ -4,7 +4,7 @@ import com.rs.game.Animation;
 import com.rs.game.Graphics;
 import com.rs.game.WorldTile;
 import com.rs.game.player.Player;
-import com.rs.game.player.content.Magic;
+import com.rs.game.player.actions.combat.Magic;
 import com.rs.utils.Utils;
 
 public class HomeTeleport extends Action {

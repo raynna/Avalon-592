@@ -1,7 +1,6 @@
 package com.rs.game.player.dialogues.impl;
 
 import com.rs.game.npc.NPC;
-import com.rs.game.player.controllers.RuneEssenceController;
 import com.rs.game.player.dialogues.Dialogue;
 import com.rs.utils.ShopsHandler;
 
@@ -42,7 +41,6 @@ public class Aubury extends Dialogue {
 			}
 			break;
 		case 1:
-			RuneEssenceController.teleport(player, npc);
 			end();
 			break;
 		default:

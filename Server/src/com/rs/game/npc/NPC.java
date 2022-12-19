@@ -27,7 +27,6 @@ import com.rs.game.npc.familiar.Familiar;
 import com.rs.game.player.Player;
 import com.rs.game.player.RouteEvent;
 import com.rs.game.player.Skills;
-import com.rs.game.player.actions.HerbCleaning;
 import com.rs.game.player.content.Burying;
 import com.rs.game.player.content.FriendChatsManager;
 import com.rs.game.player.controllers.Wilderness;
@@ -596,7 +595,7 @@ public class NPC extends Entity implements Serializable {
 		}
 		// int totalXp = 0;
 		for (int i = 0; i < item.getAmount(); i++) {
-			player.getSkills().addXp(Skills.HERBLORE, HerbCleaning.getHerb(drop.getItemId()).getExperience() * 2);
+			//TODO ADD HERBLORE XP player.getSkills().addXp(Skills.HERBLORE, HerbCleaning.getHerb(drop.getItemId()).getExperience() * 2);
 			// totalXp += HerbCleaning.getHerb(drop.getItemId()).getExperience() * 2;
 		}
 		// player.getPackets().sendGameMessage("Herbicide gathered in total of " +
@@ -692,10 +691,10 @@ public class NPC extends Entity implements Serializable {
 				i = new Item(item.getDefinitions().getCertId(), item.getAmount());
 			if (player.getInventory().containsItem(19675, 1) && defs.getName().toLowerCase().contains("grimy")
 					&& !defs.isNoted()) {
-				if (player.getSkills().getLevel(Skills.HERBLORE) >= HerbCleaning.getHerb(drop.getItemId()).getLevel()) {
+				/*//TODO ADD HERBLORE if (player.getSkills().getLevel(Skills.HERBLORE) >= HerbCleaning.getHerb(drop.getItemId()).getLevel()) {
 					handleHerbicide(player, drop, item, false);
 					return;
-				}
+				}*/
 			}
 			if ((defs.getName().toLowerCase().equalsIgnoreCase("bones")
 					|| defs.getName().toLowerCase().contains(" bones")) && player.getInventory().containsItem(18337, 1)

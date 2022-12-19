@@ -160,6 +160,9 @@ public abstract class Controller {
 		return true;
 	}
 
+	/**
+	 * return can teleport
+	 */
 	public boolean processJewerlyTeleport(WorldTile toTile) {
 		return true;
 	}

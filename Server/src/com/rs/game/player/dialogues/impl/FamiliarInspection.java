@@ -1,7 +1,7 @@
 package com.rs.game.player.dialogues.impl;
 
 import com.rs.game.WorldTile;
-import com.rs.game.player.content.Magic;
+import com.rs.game.player.actions.combat.Magic;
 import com.rs.game.player.dialogues.Dialogue;
 
 public class FamiliarInspection extends Dialogue {

@@ -6,7 +6,6 @@ import com.rs.game.World;
 import com.rs.game.WorldTile;
 import com.rs.game.item.Item;
 import com.rs.game.player.Player;
-import com.rs.game.player.actions.HerbCleaning.Herbs;
 import com.rs.game.player.content.Summoning.Pouch;
 import com.rs.game.tasks.WorldTask;
 import com.rs.game.tasks.WorldTasksManager;
@@ -59,7 +58,7 @@ public class Macaw extends Familiar {
 
 	@Override
 	public boolean submitSpecial(Object object) {
-		if (specialLock > 0) {
+		/*if (specialLock > 0) {
 			getOwner().getSocialManager().sendGameMessage("Your macaw is too tired to continue searching for herbs.");
 			return false;
 		}
@@ -87,7 +86,7 @@ public class Macaw extends Familiar {
 			herb = Herbs.values()[Utils.random(Herbs.values().length)];
 		else
 			herb = Herbs.values()[Utils.getRandom(3)];
-		World.addGroundItem(new Item(herb.getHerbId(), 1), tile, getOwner(), true, 180);
+		World.addGroundItem(new Item(herb.getHerbId(), 1), tile, getOwner(), true, 180);*///TODO
 		return true;
 	}
 }

@@ -1,8 +1,8 @@
 <component name="libraryTable">
-  <library name="libs">
+  <library name="guava-25.0-jre">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/data/libs/netty-all-4.1.24.Final.jar!/" />
       <root url="jar://$PROJECT_DIR$/data/libs/guava-25.0-jre.jar!/" />
+      <root url="jar://$PROJECT_DIR$/data/libs/netty-all-4.1.24.Final.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -209,6 +209,15 @@ public final class Inventory implements Serializable {
 		return items.contains(new Item(itemId, ammount));
 	}
 
+	public boolean containsItem(Item... items) {
+		for (Item item : items) {
+			if (item != null && !containsItem(item.getId(), item.getAmount())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public int getCoinsAmount() {
 		int coins = items.getNumberOf(995);
 		return coins < 0 ? Integer.MAX_VALUE : coins;

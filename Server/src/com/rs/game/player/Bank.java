@@ -55,6 +55,14 @@ public class Bank implements Serializable {
 			player.getPackets().sendIComponentText(13, 27, "Bank of " + Settings.SERVER_NAME);
 	}
 
+	public boolean containsOneItem(int... itemIds) {
+		for (int itemId : itemIds) {
+			if (getItem(itemId) != null)
+				return true;
+		}
+		return false;
+	}
+
 	public void checkPinInput(boolean isConfirmation, int componentId) {
 		setRequestedPin((byte) ((componentId - 4) / 4));
 		if (stage++ == 4) {
@@ -513,6 +521,18 @@ public class Bank implements Serializable {
 			for (int slot = 0; slot < bankTabs[tab].length; slot++)
 				if (bankTabs[tab][slot].getId() == id)
 					return new int[] { tab, slot };
+		}
+		return null;
+	}
+
+	public int[] getItemSlot2(int id) {
+		for (int tab = 0; tab < bankTabs.length; tab++) {
+			for (int slot = 0; slot < bankTabs[tab].length; slot++) {
+				if (bankTabs[tab][slot].getId() == ItemDefinitions.getItemDefinitions(id).getCertId())
+					return new int[] { tab, slot };
+				if (bankTabs[tab][slot].getId() == id)
+					return new int[] { tab, slot };
+			}
 		}
 		return null;
 	}

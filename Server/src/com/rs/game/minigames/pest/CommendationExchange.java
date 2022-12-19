@@ -3,7 +3,6 @@ package com.rs.game.minigames.pest;
 import com.rs.cache.loaders.ItemDefinitions;
 import com.rs.game.player.Player;
 import com.rs.game.player.Skills;
-import com.rs.game.player.actions.HerbCleaning.Herbs;
 import com.rs.game.player.content.Nest;
 import com.rs.utils.Utils;
 
@@ -75,8 +74,7 @@ public class CommendationExchange {// 1875 TODO
 				return;
 			} else if (!exchangeCommendation(player, 30))
 				return;
-			player.getInventory().addItemDrop(Herbs.values()[Utils.random(5)].getHerbId() + 1, Utils.random(4));
-			player.getInventory().addItemDrop(Herbs.values()[Herbs.values().length - 1].getHerbId() + 1, Utils.random(2));
+			//TODO ADD HERBS
 			player.getSocialManager().sendGameMessage("You exchange 30 commendation points for a herblore pack.");
 		} else if (componentId == 302) {
 			if (player.getSkills().getLevelForXp(Skills.MINING) < 25) {

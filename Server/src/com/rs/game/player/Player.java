@@ -28,24 +28,16 @@ import com.rs.game.minigames.duel.DuelArena;
 import com.rs.game.minigames.duel.DuelRules;
 import com.rs.game.npc.NPC;
 import com.rs.game.npc.familiar.Familiar;
-import com.rs.game.npc.godwars.zaros.Nex;
 import com.rs.game.npc.others.GraveStone;
 import com.rs.game.npc.others.Pet;
 import com.rs.game.player.actions.combat.PlayerCombat;
 import com.rs.game.player.content.FriendChatsManager;
 import com.rs.game.player.content.Notes;
 import com.rs.game.player.content.Pots;
-import com.rs.game.player.content.construction.House;
 import com.rs.game.player.content.grandExchange.GrandExchange;
 import com.rs.game.player.content.pet.PetManager;
 import com.rs.game.player.controllers.Controller;
-import com.rs.game.player.controllers.CorpBeastControler;
-import com.rs.game.player.controllers.FightCaves;
-import com.rs.game.player.controllers.GodWars;
-import com.rs.game.player.controllers.JailControler;
-import com.rs.game.player.controllers.NomadsRequiem;
 import com.rs.game.player.controllers.Wilderness;
-import com.rs.game.player.controllers.ZGDControler;
 import com.rs.game.player.controllers.castlewars.CastleWarsPlaying;
 import com.rs.game.player.controllers.castlewars.CastleWarsWaiting;
 import com.rs.game.player.controllers.fightpits.FightPitsArena;
@@ -155,12 +147,9 @@ public class Player extends Entity {
 	private Notes notes;
 	private FriendsIgnores friendsIgnores;
 	private Familiar familiar;
-	private FarmingManager farmingManager;
 	private QuestManager questManager;
 	private PetManager petManager;
 	private GrandExchangeManager geManager;
-	private SlayerManager slayerManager;
-	private House house;
 	private byte runEnergy;
 	private boolean allowChatEffects;
 	private boolean acceptAid;
@@ -308,10 +297,7 @@ public class Player extends Entity {
 		charges = new ChargesManager();
 		questManager = new QuestManager();
 		petManager = new PetManager();
-		farmingManager = new FarmingManager();
 		geManager = new GrandExchangeManager();
-		slayerManager = new SlayerManager();
-		house = new House();
 		runEnergy = 100;
 		allowChatEffects = true;
 		mouseButtons = true;
@@ -343,16 +329,8 @@ public class Player extends Entity {
 			playerRank = new PlayerRank();
 		if (attackedBy == null)
 			attackedBy = new HashMap<Player, Integer>();
-		if (house == null)
-			house = new House();
 		if (notes == null)
 			notes = new Notes();
-		if (farmingManager == null)
-			farmingManager = new FarmingManager();
-		if (slayerManager == null) {
-			skills.resetSkillNoRefresh(Skills.SLAYER);
-			slayerManager = new SlayerManager();
-		}
 		if (shosRewards == null)
 			shosRewards = new boolean[4];
 		this.session = session;
@@ -391,10 +369,7 @@ public class Player extends Entity {
 		charges.setPlayer(this);
 		questManager.setPlayer(this);
 		petManager.setPlayer(this);
-		house.setPlayer(this);
-		farmingManager.setPlayer(this);
 		geManager.setPlayer(this);
-		slayerManager.setPlayer(this);
 		playerRank.setPlayer(this);
 		setDirection(Utils.getFaceDirection(0, -1));
 		temporaryMovementType = -1;
@@ -612,7 +587,6 @@ public class Player extends Entity {
 		charges.process();
 		prayer.processPrayer();
 		controlerManager.process();
-		farmingManager.process();
 		cutscenesManager.process();
 		if (isDead())
 			return;
@@ -876,8 +850,6 @@ public class Player extends Entity {
 		emotesManager.init();
 		questManager.init();
 		notes.init();
-		house.init();
-		farmingManager.init();
 		geManager.init();
 		sendUnlockedObjectConfigs();
 		if (currentFriendChatOwner != null) {
@@ -1083,7 +1055,6 @@ public class Player extends Entity {
 		cutscenesManager.logout();
 		// login
 		running = false;
-		house.finish();
 		friendsIgnores.sendFriendsMyStatus(false);
 		GrandExchange.unlinkOffers(this);
 		if (currentFriendChat != null)
@@ -1092,8 +1063,6 @@ public class Player extends Entity {
 			familiar.dissmissFamiliar(true);
 		else if (pet != null)
 			pet.finish();
-		if (slayerManager.getSocialPlayer() != null)
-			slayerManager.resetSocialGroup(true);
 		setFinished(true);
 		// session.setDecoder(-1);
 		SerializableFilesManager.savePlayer(this);
@@ -2360,7 +2329,7 @@ public class Player extends Entity {
 				if (prayer.usingPrayer(0, 17)) {
 					hit.setDamage((int) (hit.getDamage() * source.getMagePrayerMultiplier()));
 				} else if (prayer.usingPrayer(1, 7)) {
-					int deflectedDamage = source instanceof Nex ? 0 : (int) (hit.getDamage() * 0.1);
+					int deflectedDamage = (int) (hit.getDamage() * 0.1);
 					hit.setDamage((int) (hit.getDamage() * source.getMagePrayerMultiplier()));
 					if (Utils.getRandom(2) <= 1 && hit.getDamage() > 10) {
 						source.applyHit(new Hit(this, deflectedDamage, HitLook.REFLECTED_DAMAGE));
@@ -2372,7 +2341,7 @@ public class Player extends Entity {
 				if (prayer.usingPrayer(0, 18)) {
 					hit.setDamage((int) (hit.getDamage() * source.getRangePrayerMultiplier()));
 				} else if (prayer.usingPrayer(1, 8)) {
-					int deflectedDamage = source instanceof Nex ? 0 : (int) (hit.getDamage() * 0.1);
+					int deflectedDamage = (int) (hit.getDamage() * 0.1);
 					hit.setDamage((int) (hit.getDamage() * source.getRangePrayerMultiplier()));
 					if (Utils.getRandom(2) <= 1 && hit.getDamage() > 10) {
 						source.applyHit(new Hit(this, deflectedDamage, HitLook.REFLECTED_DAMAGE));
@@ -2385,7 +2354,7 @@ public class Player extends Entity {
 				if (prayer.usingPrayer(0, 19)) {
 					hit.setDamage((int) (hit.getDamage() * source.getMeleePrayerMultiplier()));
 				} else if (prayer.usingPrayer(1, 9)) {
-					int deflectedDamage = source instanceof Nex ? 0 : (int) (hit.getDamage() * 0.1);
+					int deflectedDamage = (int) (hit.getDamage() * 0.1);
 					hit.setDamage((int) (hit.getDamage() * source.getMeleePrayerMultiplier()));
 					if (Utils.getRandom(2) <= 1 && hit.getDamage() > 10) {
 						source.applyHit(new Hit(this, deflectedDamage, HitLook.REFLECTED_DAMAGE));
@@ -2448,7 +2417,7 @@ public class Player extends Entity {
 	}
 
 	public boolean canSpawn() {
-		if (Wilderness.isAtWild(this) || getControlerManager().getControler() instanceof FightPitsArena || getControlerManager().getControler() instanceof CorpBeastControler || getControlerManager().getControler() instanceof PestControlLobby || getControlerManager().getControler() instanceof PestControlGame || getControlerManager().getControler() instanceof ZGDControler || getControlerManager().getControler() instanceof GodWars || getControlerManager().getControler() instanceof DuelArena || getControlerManager().getControler() instanceof CastleWarsPlaying || getControlerManager().getControler() instanceof CastleWarsWaiting || getControlerManager().getControler() instanceof FightCaves || FfaZone.inPvpArea(this) || getControlerManager().getControler() instanceof NomadsRequiem || getControlerManager().getControler() instanceof WarControler || getControlerManager().getControler() instanceof JailControler) {
+		if (Wilderness.isAtWild(this) || getControlerManager().getControler() instanceof FightPitsArena || getControlerManager().getControler() instanceof PestControlLobby || getControlerManager().getControler() instanceof PestControlGame || getControlerManager().getControler() instanceof DuelArena || getControlerManager().getControler() instanceof CastleWarsPlaying || getControlerManager().getControler() instanceof CastleWarsWaiting || FfaZone.inPvpArea(this) || getControlerManager().getControler() instanceof WarControler) {
 			return false;
 		}
 		return true;
@@ -2821,10 +2790,6 @@ public class Player extends Entity {
 		return creationDate;
 	}
 
-	public House getHouse() {
-		return house;
-	}
-
 	public boolean isAcceptingAid() {
 		return acceptAid;
 	}
@@ -2843,10 +2808,6 @@ public class Player extends Entity {
 
 	public void removeCannonBalls() {
 		this.cannonBalls = 0;
-	}
-
-	public FarmingManager getFarmingManager() {
-		return farmingManager;
 	}
 
 	public int getForumAuthID() {
@@ -2944,10 +2905,6 @@ public class Player extends Entity {
 
 	public GrandExchangeManager getGeManager() {
 		return geManager;
-	}
-
-	public SlayerManager getSlayerManager() {
-		return slayerManager;
 	}
 
 	/*

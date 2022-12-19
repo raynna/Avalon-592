@@ -4,6 +4,7 @@ import com.rs.game.WorldTile;
 import com.rs.game.item.Item;
 import com.rs.game.player.Equipment;
 import com.rs.game.player.Player;
+import com.rs.game.player.actions.combat.Magic;
 
 public class ItemTransportation {
 

@@ -763,14 +763,6 @@ public class ModernMagicks {
 
 			@Override
 			public void run() {
-				if (tile.getX() == 3222 && tile.getY() == 3222) {
-					player.setFreezeDelay(0);
-					player.getInterfaceManager().closeChatBoxInterface();
-					player.getControlerManager().forceStop();
-					stop();
-					player.getHouse().enterMyHouse();
-					return;
-				}
 				WorldTile teleTile = tile;
 				if (randomize) {
 					for (int trycount = 0; trycount < 10; trycount++) {

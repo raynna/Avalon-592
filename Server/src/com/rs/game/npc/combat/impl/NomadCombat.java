@@ -11,7 +11,7 @@ import com.rs.game.npc.combat.NPCCombatDefinitions;
 import com.rs.game.npc.nomad.FlameVortex;
 import com.rs.game.npc.nomad.Nomad;
 import com.rs.game.player.Player;
-import com.rs.game.player.content.Magic;
+import com.rs.game.player.actions.combat.Magic;
 import com.rs.game.player.dialogues.Dialogue;
 import com.rs.game.tasks.WorldTask;
 import com.rs.game.tasks.WorldTasksManager;

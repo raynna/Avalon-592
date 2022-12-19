@@ -6,8 +6,6 @@ import com.rs.game.WorldTile;
 import com.rs.game.item.Item;
 import com.rs.game.player.Player;
 import com.rs.game.player.Skills;
-import com.rs.game.player.actions.Cooking.Cookables;
-import com.rs.game.player.actions.Fishing.Fish;
 import com.rs.game.player.content.Foods.Food;
 import com.rs.game.player.content.Summoning.Pouch;
 
@@ -57,11 +55,11 @@ public class Bunyip extends Familiar {
 	}
 
 	@Override
-	public boolean submitSpecial(Object object) {
+	public boolean submitSpecial(Object object) {//TODO BUNYIP
 		Item item = getOwner().getInventory().getItem((Integer) object);
 		if (item == null)
 			return false;
-		for (Fish fish : Fish.values()) {
+		/*for (Fish fish : Fish.values()) {
 			if (fish.getId() == item.getId()) {
 				if (getOwner().getSkills().getLevel(Skills.COOKING) < fish.getLevel()) {
 					getOwner().getSocialManager().sendGameMessage("Your cooking level is not high enough for the bunyip to eat this fish.");
@@ -76,6 +74,7 @@ public class Bunyip extends Familiar {
 			}
 		}
 		getOwner().getSocialManager().sendGameMessage("Your bunyip cannot eat this.");
+		*/
 		return false;
 	}
 }

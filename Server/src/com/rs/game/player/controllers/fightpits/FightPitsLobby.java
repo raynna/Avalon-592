@@ -4,7 +4,6 @@ import com.rs.game.WorldObject;
 import com.rs.game.item.FloorItem;
 import com.rs.game.item.Item;
 import com.rs.game.minigames.FightPits;
-import com.rs.game.player.actions.FightPitsViewingOrb;
 import com.rs.game.player.controllers.Controller;
 
 public class FightPitsLobby extends Controller {
@@ -45,9 +44,6 @@ public class FightPitsLobby extends Controller {
 			return false;
 		} else if (object.getId() == 68222) {
 			player.getSocialManager().sendGameMessage("The heat prevents you passing through.");
-			return false;
-		} else if (object.getId() == 68220) {
-			player.getActionManager().setAction(new FightPitsViewingOrb());
 			return false;
 		}
 		return true;

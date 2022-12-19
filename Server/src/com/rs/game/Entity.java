@@ -15,7 +15,7 @@ import com.rs.game.npc.NPC;
 import com.rs.game.npc.familiar.Familiar;
 import com.rs.game.player.Player;
 import com.rs.game.player.Skills;
-import com.rs.game.player.content.Magic;
+import com.rs.game.player.actions.combat.Magic;
 import com.rs.game.route.RouteFinder;
 import com.rs.game.route.strategy.EntityStrategy;
 import com.rs.game.route.strategy.ObjectStrategy;

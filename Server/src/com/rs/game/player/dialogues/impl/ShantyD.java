@@ -1,6 +1,5 @@
 package com.rs.game.player.dialogues.impl;
 
-import com.rs.game.player.actions.thieving.Thieving;
 import com.rs.game.player.dialogues.Dialogue;
 import com.rs.utils.ShopsHandler;
 
@@ -71,7 +70,6 @@ public class ShantyD extends Dialogue {
 		case 6:
 			stage = -2;
 			sendNPCDialogue(836, 9827, "<p=2>Haha, very funny...<br>Guards, arrest " + (player.getAppearence().isMale() ? "him" : "her") + "!");
-			Thieving.checkGuards(player);
 			break;
 		case 7:
 			stage = 8;

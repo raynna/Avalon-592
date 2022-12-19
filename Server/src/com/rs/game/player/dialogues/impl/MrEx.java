@@ -5,9 +5,7 @@ import com.rs.cache.loaders.NPCDefinitions;
 import com.rs.game.WorldTile;
 import com.rs.game.minigames.CastleWars;
 import com.rs.game.player.Skills;
-import com.rs.game.player.content.Magic;
-import com.rs.game.player.controllers.FightCaves;
-import com.rs.game.player.controllers.RunespanControler;
+import com.rs.game.player.actions.combat.Magic;
 import com.rs.game.player.dialogues.Dialogue;
 
 public class MrEx extends Dialogue {
@@ -106,8 +104,6 @@ public class MrEx extends Dialogue {
 		} else if (stage == 7) {
 			if (componentId == OPTION_1)
 				Magic.sendNormalTeleportSpell(player, 0, 0, new WorldTile(3226, 3108, 0));
-			else if (componentId == OPTION_2)
-				Magic.sendNormalTeleportSpell(player, 0, 0, FightCaves.OUTSIDE);
 			else if (componentId == OPTION_3)
 				player.getSocialManager().sendGameMessage("Disabled.");
 				//Magic.sendNormalTeleportSpell(player, 0, 0, FightKiln.OUTSIDE);
@@ -123,9 +119,7 @@ public class MrEx extends Dialogue {
 				stage = 8;
 			}
 		} else if (stage == 8) {
-			if (componentId == OPTION_1)
-				RunespanControler.enterRunespan(player, false);
-			else if (componentId == OPTION_2)
+			if (componentId == OPTION_2)
 				Magic.sendNormalTeleportSpell(player, 0, 0, new WorldTile(2273, 4705, 0));
 			else if (componentId == OPTION_5) {
 				sendOptionsDialogue("Where would you like to go?", "Nex.", "Bandos.", "Sara.", "Tormented Demons", "More Options");
