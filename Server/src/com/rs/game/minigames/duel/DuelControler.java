@@ -42,14 +42,14 @@ public class DuelControler extends Controller {
 
 	@Override
 	public void magicTeleported(int type) {
-		removeControler();
+		removeController();
 		remove();
 	}
 
 	@Override
 	public void moved() {
 		if (!isAtDuelArena(player)) {
-			removeControler();
+			removeController();
 			remove();
 		}
 	}

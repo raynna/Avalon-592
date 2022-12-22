@@ -234,7 +234,7 @@ public class CastleWarsPlaying extends Controller {
 	public boolean processObjectClick1(WorldObject object) {
 		int id = object.getId();
 		if (id == 4406 || id == 4407) {
-			removeControler();
+			removeController();
 			leave();
 			return false;
 		} else if ((id == 4469 && team == CastleWars.SARADOMIN) || (id == 4470 && team == CastleWars.ZAMORAK)) {
@@ -433,7 +433,7 @@ public class CastleWarsPlaying extends Controller {
 
 	@Override
 	public void magicTeleported(int type) {
-		removeControler();
+		removeController();
 		leave();
 	}
 

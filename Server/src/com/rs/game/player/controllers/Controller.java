@@ -32,15 +32,12 @@ public abstract class Controller {
 		player.getControlerManager().setLastControlerArguments(objects);
 	}
 
-	public final void removeControler() {
+	public final void removeController() {
 		player.getControlerManager().removeControlerWithoutCheck();
 	}
 
 	public abstract void start();
 
-	public boolean canEat(Food food) {
-		return true;
-	}
 
 	public boolean canPot(Pot pot) {
 		return true;
@@ -115,6 +112,10 @@ public abstract class Controller {
 	 */
 	public void process() {
 
+	}
+
+	public boolean canEat(Food food) {
+		return true;
 	}
 
 	public void moved() {

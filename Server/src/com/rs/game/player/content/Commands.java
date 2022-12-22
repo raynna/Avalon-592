@@ -345,6 +345,12 @@ public final class Commands {
 			Player target;
 			WorldObject object;
 			switch (cmd[0].toLowerCase()) {
+				case "tele":
+					int plane = Integer.parseInt(cmd[3]);
+					int x = Integer.parseInt(cmd[1]);
+					int y = Integer.parseInt(cmd[2]);
+					player.setNextWorldTile(new WorldTile(x, y, plane));
+					return true;
 			case "switchyell":
 				Settings.YELL_ENABLED = !Settings.YELL_ENABLED;
 				player.getSocialManager().sendGameMessage("All yells are currently " + Settings.YELL_ENABLED);
@@ -386,16 +392,7 @@ public final class Commands {
 				}
 				return true;
 			case "pos":
-				try {
-					File file = new File("data/positions.txt");
-					BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
-					writer.write("|| player.getX() == " + player.getX() + " && player.getY() == " + player.getY() + "");
-					writer.newLine();
-					writer.flush();
-					writer.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				player.sm("Position: " + player.getX() + ", " + player.getY() + ", " + player.getPlane());
 				return true;
 
 			case "killnpc":
@@ -449,6 +446,19 @@ public final class Commands {
 					player.getSocialManager().sendPanelBoxMessage("Use: ::emusic soundid");
 				}
 				return true;
+				case "inter":
+					if (cmd.length < 2) {
+						player.getSocialManager().sendPanelBoxMessage("Use: ::inter interfaceId");
+						return true;
+					}
+					try {
+						player.getInterfaceManager().sendInterface(Integer.valueOf(cmd[1]));
+						player.getTemporaryAttributtes().put("PREVIOUS_INTERFACE", Integer.valueOf(cmd[1]));
+						player.getSocialManager().sendGameMessage("Sent interfaceId: " + Integer.valueOf(cmd[1]));
+					} catch (NumberFormatException e) {
+						player.getSocialManager().sendPanelBoxMessage("Use: ::inter interfaceId");
+					}
+					return true;
 			case "removecontroler":
 				player.getControlerManager().forceStop();
 				player.getInterfaceManager().sendInterfaces();

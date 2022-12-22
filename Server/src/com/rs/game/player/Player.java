@@ -3050,4 +3050,8 @@ public class Player extends Entity {
 	public Item getBeamItem() {
 		return beamItem;
 	}
+
+	public void moved() {
+		getSocialManager().sendGameMessage("Moved to " + getX() + ":" + getY());
+	}
 }

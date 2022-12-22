@@ -262,7 +262,7 @@ public final class RequestController extends Controller {
 	 * Called when the request controller should unregister.
 	 */
 	public void stop() {
-		removeControler();
+		removeController();
 		decline();
 		player.getInterfaceManager().removeWindowInterface(player.getInterfaceManager().hasRezizableScreen() ? 1 : 11);
 		player.getPackets().sendPlayerOption("null", 1, false);

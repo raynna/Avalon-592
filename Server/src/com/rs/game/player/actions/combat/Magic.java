@@ -131,7 +131,7 @@ public class Magic {
 				player.getSocialManager().sendGameMessage("You cannot teleport out of here.");
 				return;
 			}
-			useHomeTele(player);
+			sendAncientTeleportSpell(player, 0, 0, Settings.HOME_PLAYER_LOCATION, null);
 			break;
 		case 40:
 			sendAncientTeleportSpell(player, 54, 64, new WorldTile(3099, 9882, 0), LAW_RUNE, 2, FIRE_RUNE, 1, AIR_RUNE,
@@ -250,7 +250,7 @@ public class Magic {
 			player.getSkills().addXp(Skills.MAGIC, 35.5);
 			break;
 		case 24:
-			player.getInterfaceManager().sendInterface(1092);
+			sendNormalTeleportSpell(player, 0, 0, Settings.HOME_PLAYER_LOCATION, null);
 			break;
 		case 83:
 			if (player.getSkills().getLevel(Skills.MAGIC) < 80) {
@@ -622,8 +622,10 @@ public class Magic {
 			player.getSocialManager().sendGameMessage("You cannot teleport out of here.");
 			return false;
 		}
-		if (!checkRunes1(player, false, runes))
-			return false;
+		if (runes != null) {
+			if (!checkRunes1(player, false, runes))
+				return false;
+		}
 		if (teleType == MAGIC_TELEPORT) {
 			if (!player.getControlerManager().processMagicTeleport(tile))
 				return false;
@@ -637,7 +639,7 @@ public class Magic {
 			if (!player.getControlerManager().processObjectTeleport(tile))
 				return false;
 		}
-
+		if (runes != null)
 		checkRunes1(player, true, runes);
 		player.stopAll();
 		if (xp != 0)

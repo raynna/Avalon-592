@@ -60,7 +60,7 @@ public class FightPitsArena extends Controller {
 
 	@Override
 	public boolean login() { // shouldnt happen
-		removeControler();
+		removeController();
 		FightPits.leaveArena(player, 2);
 		return false;
 	}

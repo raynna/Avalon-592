@@ -53,9 +53,9 @@ public final class Settings {
 	 * Player settings
 	 */
 	public static final int START_PLAYER_HITPOINTS = 100;
-	public static final WorldTile START_PLAYER_LOCATION = new WorldTile(3222, 3222, 0);
-	public static final WorldTile RESPAWN_PLAYER_LOCATION = new WorldTile(3222, 3222, 0);
-	public static final WorldTile HOME_PLAYER_LOCATION = new WorldTile(3087, 3496, 0);
+	public static final WorldTile START_PLAYER_LOCATION = new WorldTile(3164, 3484, 0);
+	public static final WorldTile RESPAWN_PLAYER_LOCATION = new WorldTile(3164, 3484, 0);
+	public static final WorldTile HOME_PLAYER_LOCATION = new WorldTile(3164, 3484, 0);
 	public static final String START_CONTROLER = "null";// "NewPlayerController";
 
 	public static final int CONNECTION_TIMEOUT = 30000; // 1minute

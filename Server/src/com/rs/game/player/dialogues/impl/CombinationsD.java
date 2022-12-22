@@ -211,7 +211,9 @@ public class CombinationsD extends Dialogue {
 
 		CLAY_JUG(1, 0, new Item(434), new Item(1761), PUT, new Item(1937)),
 
-		MASKED_EARMUFFS(1, 0, new Item(4166), new Item(13277), 20, new Item(4164));
+		MASKED_EARMUFFS(1, 0, new Item(4166), new Item(13277), 20, new Item(4164)),
+
+		CRYSTAL_KEY(1, 0, new Item(985), new Item(987), COMBINE, new Item(989));
 
 		private Item initialNode;
 		private Item[] producedNodes;

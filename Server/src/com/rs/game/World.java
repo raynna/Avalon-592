@@ -407,6 +407,7 @@ public final class World {
 				player.getControlerManager().moved();
 				if (player.hasStarted())
 					checkControlersAtMove(player);
+				player.moved();
 			}
 			entity.checkMultiArea();
 		}

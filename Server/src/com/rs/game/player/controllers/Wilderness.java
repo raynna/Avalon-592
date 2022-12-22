@@ -162,7 +162,7 @@ public class Wilderness extends Controller {
 					player.setNextWorldTile(toTile);
 					player.faceObject(object);
 					removeIcon();
-					removeControler();
+					removeController();
 					player.resetReceivedDamage();
 					player.unlock();
 				}
@@ -212,7 +212,7 @@ public class Wilderness extends Controller {
 					player.setNextAnimation(new Animation(-1));
 				} else if (loop == 4) {
 					removeIcon();
-					removeControler();
+					removeController();
 					player.getPackets().sendMusicEffect(90);
 					stop();
 				}
@@ -227,7 +227,7 @@ public class Wilderness extends Controller {
 		if (!isAtWild(player.getNextWorldTile())) {
 			player.setCanPvp(false);
 			removeIcon();
-			removeControler();
+			removeController();
 		}
 	}
 
@@ -245,11 +245,11 @@ public class Wilderness extends Controller {
 		} else if (!isAtWildSafe && !isAtWild) {
 			player.setCanPvp(false);
 			removeIcon();
-			removeControler();
+			removeController();
 		} else if ((player.getX() == 3386 || player.getX() == 3387) && player.getY() == 3615) {
 			removeIcon();
 			player.setCanPvp(false);
-			removeControler();
+			removeController();
 			player.getControlerManager().startControler("Kalaboss");
 		}
 	}
