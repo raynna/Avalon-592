@@ -3099,9 +3099,9 @@ public class PlayerCombat extends Action {
             Player p2 = (Player) target;
             int weaponId = p2.getEquipment().getWeaponId();
             if (hit.getLook() == HitLook.MELEE_DAMAGE) {
-                if (p2.getPolDelay() > Utils.currentTimeMillis()) {
+                if (p2.getSoLDelay() > Utils.currentTimeMillis()) {
                     if (weaponId != 15486 && weaponId != 11736) {
-                        p2.setPolDelay(0);
+                        p2.setSoLDelay(0);
                         p2.getSocialManager().sendGameMessage("The power of the " + (weaponId == 15486 ? "light" : "dead")
                                 + "fades. Your resistance to melee attacks return to normal.");
                     } else {
@@ -4033,11 +4033,11 @@ public class PlayerCombat extends Action {
         } else {
             player.resetWalkSteps();
         }
-        if (player.getPolDelay() >= Utils.currentTimeMillis() && !(player.getEquipment().getWeaponId() == 15486
+        if (player.getSoLDelay() >= Utils.currentTimeMillis() && !(player.getEquipment().getWeaponId() == 15486
                 || player.getEquipment().getWeaponId() == 22207 || player.getEquipment().getWeaponId() == 22209
                 || player.getEquipment().getWeaponId() == 11736 || player.getEquipment().getWeaponId() == 22211
                 || player.getEquipment().getWeaponId() == 22213))
-            player.setPolDelay(0);
+            player.setSoLDelay(0);
         player.getTemporaryAttributtes().put("last_target", target);
         target.getTemporaryAttributtes().put("last_attacker", player);
         player.getTemporaryAttributtes().put("temporaryActionDelay", 4 * 1000 + Utils.currentTimeMillis());

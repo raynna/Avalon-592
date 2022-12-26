@@ -9,7 +9,7 @@ import com.rs.utils.Utils;
 public class Vengeance {
 	
 	public static boolean cast(Player player, double xp) {
-		if (player.getVengDelay() >= Utils.currentTimeMillis()) {
+		if (player.getVengeanceDelay() >= Utils.currentTimeMillis()) {
 			player.sm("You can only cast vengeance every 30 seconds.");
 			return false;
 		}
@@ -17,8 +17,8 @@ public class Vengeance {
 		player.gfx(new Graphics(726, 0, 100));
 		player.animate(new Animation(4410));
 		player.setVengeance(true);
-		player.setVengeance(30000);
-		player.sm("You cast a vengeance.");
+		player.setVengeanceDelay(30000);
+		player.sm("You cast vengeance.");
 		return true;
 	}
 

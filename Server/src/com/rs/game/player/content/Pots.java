@@ -544,7 +544,7 @@ public final class Pots {
 				 * if (player.getOverloadDelay() > 0) { player.getSocialManager().sendGameMessage(
 				 * "You may only use this potion every five minutes."); return false; }
 				 */
-				if (player.getHitpoints() <= 500 || player.getOverloadDelay() > 480) {
+				if (player.getHitpoints() <= 500 || player.getOverload() > 480) {
 					player.getSocialManager().sendGameMessage("You need more than 500 life points to survive the power of overload.");
 					return false;
 				}
@@ -553,7 +553,7 @@ public final class Pots {
 
 			@Override
 			public void extra(final Player player) {
-				player.setOverloadDelay(501);
+				player.setOverload(501);
 				WorldTasksManager.schedule(new WorldTask() {
 					int count = 4;
 
@@ -802,7 +802,6 @@ public final class Pots {
 				player.getSkills().set(Skills.RANGE, realLevel);
 			player.heal(500);
 		}
-		player.setOverloadDelay(0);
 		player.getSocialManager().sendGameMessage("<col=480000>The effects of overload have worn off and you feel normal again.");
 	}
 

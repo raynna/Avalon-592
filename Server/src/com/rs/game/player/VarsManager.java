@@ -32,7 +32,7 @@ public class VarsManager {
 	}
 
 	private void sendVar(int id, int value, boolean force) {
-		if (id < 0 || id >= values.length) // temporarly
+		if (id < 0 || id >= values.length)
 			return;
 		if (force || values[id] == value)
 			return;
@@ -41,7 +41,7 @@ public class VarsManager {
 	}
 
 	public void setVar(int id, int value) {
-		if (id == -1) // temporarly
+		if (id == -1)
 			return;
 		values[id] = value;
 	}

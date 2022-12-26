@@ -10,7 +10,7 @@ import com.rs.utils.Utils;
 public class VengeanceGroup {
 
 	public static boolean cast(Player player, double xp) {
-		if (player.getVengDelay() >= Utils.currentTimeMillis()) {
+		if (player.getVengeanceDelay() >= Utils.currentTimeMillis()) {
 			player.sm("You can only cast vengeance every 30 seconds.");
 			return false;
 		}
@@ -21,11 +21,11 @@ public class VengeanceGroup {
 		int count = 0;
 		for (Player other : World.getPlayers()) {
 			if (other.withinDistance(player, 6) && other.isAcceptingAid() && other.isAtMultiArea()
-					&& other.getVengDelay() < Utils.currentTimeMillis()) {
+					&& other.getVengeanceDelay() < Utils.currentTimeMillis()) {
 				other.sm(player.getDisplayName() + " cast the Group Vengeance spell and you were affected!");
 				other.gfx(new Graphics(725, 0, 100));
 				other.setVengeance(true);
-				other.setVengeance(30000);
+				other.setVengeanceDelay(30000);
 				count++;
 			}
 		}
@@ -34,7 +34,7 @@ public class VengeanceGroup {
 		player.gfx(new Graphics(725, 0, 100));
 		player.animate(new Animation(4411));
 		player.setVengeance(true);
-		player.setVengeance(30000);
+		player.setVengeanceDelay(30000);
 		return true;
 	}
 

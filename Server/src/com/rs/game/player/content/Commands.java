@@ -23,6 +23,7 @@ import com.rs.game.npc.NPC;
 import com.rs.game.player.Player;
 import com.rs.game.player.Ranks;
 import com.rs.game.player.Skills;
+import com.rs.game.player.VariableKeys;
 import com.rs.game.tasks.WorldTask;
 import com.rs.game.tasks.WorldTasksManager;
 import com.rs.utils.Censor;
@@ -350,6 +351,20 @@ public final class Commands {
 					int x = Integer.parseInt(cmd[1]);
 					int y = Integer.parseInt(cmd[2]);
 					player.setNextWorldTile(new WorldTile(x, y, plane));
+					return true;
+				case "kc":
+					player.getSocialManager().sendGameMessage("Killcount: " + player.getKillcount());
+					return true;
+				case "addkc":
+					player.addKillcount(3);
+					player.sm("added " + 3 + " killcount, new killcount: " + player.getKillcount());
+					return true;
+				case "removekc":
+					player.removeKillcount(2);
+					player.sm("removed " + 2 + " killcount, new killcount: " + player.getKillcount());
+					return true;
+				case "clearkc":
+					player.clear(VariableKeys.IntKey.KILLCOUNT);
 					return true;
 			case "switchyell":
 				Settings.YELL_ENABLED = !Settings.YELL_ENABLED;

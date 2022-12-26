@@ -12,11 +12,11 @@ public class VengeanceOther {
 	public static boolean cast(Player player, Entity target, double xp) {
 		if (target instanceof Player) {
 			Player other = (Player) target;
-			if (player.getVengDelay() >= Utils.currentTimeMillis()) {
+			if (player.getVengeanceDelay() >= Utils.currentTimeMillis()) {
 				player.sm("You can only cast vengeance every 30 seconds.");
 				return false;
 			}
-			if (other.getVengDelay() >= Utils.currentTimeMillis()) {
+			if (other.getVengeanceDelay() >= Utils.currentTimeMillis()) {
 				player.sm(other.getDisplayName() + " can only cast vengeance every 30 seconds.");
 				return false;
 			}
@@ -32,8 +32,8 @@ public class VengeanceOther {
 			other.gfx(new Graphics(725, 0, 100));
 			other.sm(player.getDisplayName() + " cast an vengeance spell on you.");
 			other.setVengeance(true);
-			other.setVengeance(30000);
-			player.setVengeance(30000);
+			other.setVengeanceDelay(30000);
+			player.setVengeanceDelay(30000);
 			player.getSkills().addXp(Skills.MAGIC, xp);
 			return true;
 		}

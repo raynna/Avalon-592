@@ -56,6 +56,11 @@ import com.rs.utils.MachineInformation;
 import com.rs.utils.PkRank;
 import com.rs.utils.SerializableFilesManager;
 import com.rs.utils.Utils;
+import com.rs.game.player.VariableKeys.IntKey;
+import com.rs.game.player.VariableKeys.BooleanKey;
+import com.rs.game.player.VariableKeys.StringKey;
+import com.rs.game.player.VariableKeys.LongKey;
+import com.rs.game.player.Key.Keys;
 
 import io.netty.channel.Channel;
 
@@ -68,6 +73,58 @@ public class Player extends Entity {
 	// transient stuff
 	private transient String username;
 	private transient Channel session;
+
+	private Map<LongKey, Long> longMap = new HashMap<>();
+	private Map<IntKey, Integer> intMap = new HashMap<>();
+	private Map<BooleanKey, Boolean> booleanMap = new HashMap<>();
+	private Map<StringKey, String> stringKey = new HashMap<>();
+
+	public void set(LongKey key, long i) {
+		longMap.put(key, i);
+	}
+
+	public long get(LongKey key) {
+		Long map = longMap.getOrDefault(key, key.getDefaultValue());
+		if (map == null) {
+			System.out.println("LongMap: " + map + " is null");
+			return -1;
+		}
+		return map.longValue();
+	}
+
+	public void set(IntKey key, int i) {
+		intMap.put(key, i);
+	}
+
+	public void add(IntKey key, int i) {
+		intMap.merge(key, i, Integer::sum);
+	}
+
+	public void remove(IntKey key, int i) {
+		intMap.compute(key, (k, v) -> Math.max(v - i, 0));
+	}
+
+	public void clear(IntKey key) {
+		intMap.remove(key);
+	}
+
+	public int get(IntKey key) {
+		Integer map = intMap.getOrDefault(key, key.getDefaultValue());
+		if (map == null)
+			return 0;
+		return map.intValue();
+	}
+
+	public void set(BooleanKey key, boolean i) {
+		booleanMap.put(key, i);
+	}
+
+	public boolean get(BooleanKey key) {
+		Boolean map = booleanMap.getOrDefault(key, key.getDefaultValue());
+		if (map == null)
+			return false;
+		return map.booleanValue();
+	}
 	private transient boolean clientLoadedMapRegion;
 	private transient int displayMode;
 	private transient int screenWidth;
@@ -110,17 +167,11 @@ public class Player extends Entity {
 	private transient int resting;
 	private transient boolean canPvp;
 	private transient boolean cantTrade;
-	private transient long lockDelay; // used for doors and stuff like that
-	private transient long foodDelay;
-	private transient long potDelay;
 	private transient Runnable closeInterfacesEvent;
 	private transient long lastPublicMessage;
-	private transient long polDelay;
 	private transient List<Integer> switchItemCache;
 	private transient boolean disableEquip;
 	private transient MachineInformation machineInformation;
-	private transient boolean castedVeng;
-	private transient boolean invulnerable;
 	private transient double hpBoostMultiplier;
 	private transient int cannonBalls;
 	private transient boolean largeSceneView;
@@ -162,8 +213,6 @@ public class Player extends Entity {
 	private int skullDelay;
 	private int skullId;
 	private boolean forceNextMapLoadRefresh;
-	private long poisonImmune;
-	private long fireImmune;
 	private boolean killedQueenBlackDragon;
 	private int runeSpanPoints;
 	private int pestPoints;
@@ -225,8 +274,6 @@ public class Player extends Entity {
 
 	// gravestone
 	private int graveStone;
-
-	private int overloadDelay;
 
 	private String currentFriendChatOwner;
 	private String clanName;// , guestClanChat;
@@ -378,11 +425,14 @@ public class Player extends Entity {
 		initEntity();
 		World.addPlayer(this);
 		World.updateEntityRegion(this);
+		if (longMap == null)
+			longMap = new HashMap<>();
+		if (intMap == null)
+			intMap = new HashMap<>();
+		if (booleanMap == null)
+			booleanMap = new HashMap<>();
 		if (Settings.DEBUG)
 			Logger.log(this, "Initiated player: " + username + ", pass: " + password);
-
-		// Do not delete >.>, useful for security purpose. this wont waste that
-		// much space..
 		if (passwordList == null)
 			passwordList = new ArrayList<String>();
 		if (ipList == null)
@@ -518,12 +568,6 @@ public class Player extends Entity {
 		combatDefinitions.resetSpells(true);
 		resting = 0;
 		skullDelay = 0;
-		foodDelay = 0;
-		potDelay = 0;
-		poisonImmune = 0;
-		fireImmune = 0;
-		overloadDelay = 0;
-		castedVeng = false;
 		setRunEnergy(100);
 		appearence.generateAppearenceData();
 	}
@@ -597,9 +641,9 @@ public class Player extends Entity {
 			if (!hasSkull())
 				appearence.generateAppearenceData();
 		}
-		if (polDelay != 0 && polDelay <= Utils.currentTimeMillis()) {
+		if (getSoLDelay() != 0 && getSoLDelay() <= Utils.currentTimeMillis()) {
 			getSocialManager().sendGameMessage("The power of the light fades. Your resistance to melee attacks return to normal.");
-			polDelay = 0;
+			removeSoLDelay();
 		}
 		for (Player player : World.getPlayers()) {
 			if (player == null || attackedBy.isEmpty())
@@ -612,13 +656,12 @@ public class Player extends Entity {
 				attackedBy.put(player, attackedBy.get(player).intValue() - 1);
 			}
 		}
-		if (overloadDelay > 0) {
-			if (overloadDelay == 1 || isDead()) {
+		if (getOverload() >= Utils.currentTimeMillis()) {
+			if (getOverload() == 1 || isDead()) {
 				Pots.resetOverLoadEffect(this);
 				return;
-			} else if ((overloadDelay - 1) % 25 == 0)
+			} else if ((getOverload() - 1) % 25 == 0)
 				Pots.applyOverLoadEffect(this);
-			overloadDelay--;
 		}
 		if (getFrozenBy() != null && this != null) {
 			if (!Utils.inCircle(getFrozenBy(), this, 12) && getFreezeDelay() >= Utils.currentTimeMillis()) {
@@ -1476,31 +1519,10 @@ public class Player extends Entity {
 		return disruptionActivated;
 	}
 
-	public long getVengDelay() {
-		Long vengDelay = (Long) getTemporaryAttributtes().get("vengDelay");
-		if (vengDelay == null)
-			return 0;
-		return vengDelay;
-	}
-
-	public boolean isVengeanceActivated() {
-		Boolean vengeanceActivated = (Boolean) getTemporaryAttributtes().get("vengeanceActivated");
-		if (vengeanceActivated == null)
-			return false;
-		return vengeanceActivated;
-	}
-
-	public void setVengeance(boolean castVengeance) {
-		getTemporaryAttributtes().put("vengeanceActivated", castVengeance);
-	}
-
 	public void setDisruption(boolean castDisruption) {
 		getTemporaryAttributtes().put("disruptionActivated", castDisruption);
 	}
 
-	public void setVengeance(long vengDelay) {
-		getTemporaryAttributtes().put("vengDelay", vengDelay + Utils.currentTimeMillis());
-	}
 
 	@Override
 	public void sendDeath(final Entity source) {
@@ -1749,12 +1771,9 @@ public class Player extends Entity {
 	}
 
 	public boolean isLocked() {
-		return lockDelay > WorldThread.WORLD_CYCLE;// Utils.currentTimeMillis();
+		return getLockDelay() > WorldThread.WORLD_CYCLE;// Utils.currentTimeMillis();
 	}
 
-	public long getLockDelay() {
-		return lockDelay;
-	}
 
 	/**
 	 * @Freeze spell variables
@@ -1806,18 +1825,23 @@ public class Player extends Entity {
 	}
 
 	public void lock() {
-		lockDelay = Long.MAX_VALUE;
+		getTemporaryAttributtes().put(Keys.LOCK_DELAY, Long.MAX_VALUE);
 	}
 
 	public void lock(long time) {
-		lockDelay = time == -1 ? Long.MAX_VALUE : WorldThread.WORLD_CYCLE + time;/*
-																					 * Utils . currentTimeMillis ( ) + ( time * 600 )
-																					 */
-		;
+		long delay = time == -1 ? Long.MAX_VALUE : WorldThread.WORLD_CYCLE + time;
+		getTemporaryAttributtes().put(Keys.LOCK_DELAY, delay);
 	}
 
 	public void unlock() {
-		lockDelay = 0;
+		getTemporaryAttributtes().remove(Keys.LOCK_DELAY);
+	}
+
+	public long getLockDelay() {
+		Long lockDelay = (Long) getTemporaryAttributtes().get(Keys.LOCK_DELAY);
+		if (lockDelay == null)
+			return 0;
+		return lockDelay.longValue();
 	}
 
 	public void useStairs(int emoteId, final WorldTile dest, int useDelay, int totalDelay) {
@@ -1956,45 +1980,6 @@ public class Player extends Entity {
 		this.displayName = displayName;
 	}
 
-	public void addPotDelay(long time) {
-		potDelay = time + Utils.currentTimeMillis();
-	}
-
-	public long getPotDelay() {
-		return potDelay;
-	}
-
-	public void addFoodDelay(long time) {
-		foodDelay = time + Utils.currentTimeMillis();
-	}
-
-	public long getFoodDelay() {
-		return foodDelay;
-	}
-
-	public void addPoisonImmune(long time) {
-		poisonImmune = time + Utils.currentTimeMillis();
-		getPoison().reset();
-	}
-
-	public long getPoisonImmune() {
-		return poisonImmune;
-	}
-
-	public void addFireImmune(long time) {
-		fireImmune = time + Utils.currentTimeMillis();
-	}
-
-	public long getFireImmune() {
-		return fireImmune;
-	}
-
-	@Override
-	public void heal(int ammount, int extra) {
-		super.heal(ammount, extra);
-		refreshHitPoints();
-	}
-
 	public MusicsManager getMusicsManager() {
 		return musicsManager;
 	}
@@ -2003,12 +1988,125 @@ public class Player extends Entity {
 		return hintIconsManager;
 	}
 
-	public boolean isCastVeng() {
-		return castedVeng;
+
+	/** Temporary attributes
+	 **/
+	public void addPotDelay(long time) {
+		long delay = time == -1 ? Long.MAX_VALUE : WorldThread.WORLD_CYCLE + time;
+		getTemporaryAttributtes().put(Keys.POTION_DELAY, delay);
 	}
 
-	public void setCastVeng(boolean castVeng) {
-		this.castedVeng = castVeng;
+	public long getPotDelay() {
+		Long potDelay = (Long) getTemporaryAttributtes().get(Keys.POTION_DELAY);
+		if (potDelay == null)
+			return 0;
+		return potDelay.longValue();
+	}
+
+	public void setSoLDelay(long time) {
+		long delay = time == -1 ? Long.MAX_VALUE : WorldThread.WORLD_CYCLE + time;
+		getTemporaryAttributtes().put(Keys.STAFF_OF_LIGHT, delay);
+	}
+
+	public void removeSoLDelay() {
+		getTemporaryAttributtes().remove(Keys.STAFF_OF_LIGHT);
+	}
+
+	public long getSoLDelay() {
+		Long delay = (Long) getTemporaryAttributtes().get(Keys.STAFF_OF_LIGHT);
+		if (delay == null)
+			return 0;
+		return delay.longValue();
+	}
+
+	public void addFoodDelay(long time) {
+		long delay = time == -1 ? Long.MAX_VALUE : WorldThread.WORLD_CYCLE + time;
+		getTemporaryAttributtes().put(Keys.FOOD_DELAY, delay);
+	}
+
+	public long getFoodDelay() {
+		Long delay = (Long) getTemporaryAttributtes().get(Keys.FOOD_DELAY);
+		if (delay == null)
+			return 0;
+		return delay.longValue();
+	}
+
+	public long getVengeanceDelay() {
+		Long vengDelay = (Long) getTemporaryAttributtes().get(Keys.VENGEANCE_DELAY);
+		if (vengDelay == null)
+			return 0;
+		return vengDelay;
+	}
+
+	public boolean isVengeanceActivated() {
+		Boolean vengeance = (Boolean) getTemporaryAttributtes().get(Keys.VENGEANCE);
+		if (vengeance == null)
+			return false;
+		return vengeance;
+	}
+
+	public void setVengeanceDelay(long time) {
+		getTemporaryAttributtes().put(Keys.VENGEANCE_DELAY, WorldThread.WORLD_CYCLE + time);
+	}
+
+	public void setVengeance(boolean vengeance) {
+		getTemporaryAttributtes().put(Keys.VENGEANCE, vengeance);
+	}
+
+
+	/** Saved attributes
+	 **/
+	public void addPoisonImmune(long time) {
+		set(LongKey.POISON_IMMUNITY, WorldThread.WORLD_CYCLE + time);
+	}
+
+	public long getPoisonImmune() {
+		long time = get(LongKey.POISON_IMMUNITY);
+		return time;
+	}
+
+	public void addFireImmune(long time) {
+		set(LongKey.FIRE_IMMUNITY, WorldThread.WORLD_CYCLE + time);
+	}
+
+	public long getFireImmune() {
+		long time = get(LongKey.FIRE_IMMUNITY);
+		return time;
+	}
+
+	public void setOverload(long time) {
+		set(LongKey.OVERLOAD_EFFECT, WorldThread.WORLD_CYCLE + time);
+	}
+
+	public long getOverload() {
+		long time = get(LongKey.OVERLOAD_EFFECT);
+		return time;
+	}
+
+	public void addKillcount(int amount) {
+		add(IntKey.KILLCOUNT, amount);
+	}
+
+	public void removeKillcount(int amount) {
+		remove(IntKey.KILLCOUNT, amount);
+	}
+
+	public int getKillcount() {
+		return get(IntKey.KILLCOUNT);
+	}
+
+	public void addDeathcount(int amount) {
+		add(IntKey.DEATHCOUNT, amount);
+	}
+
+	public int getDeathcount() {
+		return get(IntKey.DEATHCOUNT);
+	}
+
+	@Override
+	public void heal(int ammount, int extra) {
+		super.heal(ammount, extra);
+		refreshHitPoints();
 	}
 
 	public int getKillCount() {
@@ -2280,14 +2378,6 @@ public class Player extends Entity {
 		logicPackets.add(packet);
 	}
 
-	public int getOverloadDelay() {
-		return overloadDelay;
-	}
-
-	public void setOverloadDelay(int overloadDelay) {
-		this.overloadDelay = overloadDelay;
-	}
-
 	public Trade getTrade() {
 		return trade;
 	}
@@ -2423,18 +2513,6 @@ public class Player extends Entity {
 		return true;
 	}
 
-	public long getPolDelay() {
-		return polDelay;
-	}
-
-	public void addPolDelay(long delay) {
-		polDelay = delay + Utils.currentTimeMillis();
-	}
-
-	public void setPolDelay(long delay) {
-		this.polDelay = delay;
-	}
-
 	public List<Integer> getSwitchItemCache() {
 		return switchItemCache;
 	}
@@ -2563,7 +2641,7 @@ public class Player extends Entity {
 			setNextAnimation(new Animation(12804));
 			setNextGraphics(new Graphics(2319));// 2320
 			setNextGraphics(new Graphics(2321));
-			addPolDelay(60000);
+			setSoLDelay(60000);
 			combatDefinitions.desecreaseSpecialAttack(specAmt);
 			break;
 		}
@@ -2723,10 +2801,6 @@ public class Player extends Entity {
 
 	public void setYellOff(boolean yellOff) {
 		this.yellOff = yellOff;
-	}
-
-	public void setInvulnerable(boolean invulnerable) {
-		this.invulnerable = invulnerable;
 	}
 
 	public double getHpBoostMultiplier() {

@@ -61,7 +61,7 @@ public abstract class CombatScript {
 						return;
 					target.applyHit(hit);
 					handleRingOfRecoil(npc, target, hit);
-					handleVengHit(target, hit);
+					handleVengeance(target, hit);
 					if (npc.getId() >= 912 && npc.getId() <= 914) {
 						if (hit.getDamage() == 0)
 							target.gfx(new Graphics(85, 0, 96));
@@ -164,13 +164,13 @@ public abstract class CombatScript {
 		}
 	}
 
-	private static void handleVengHit(Entity target, Hit hit) {
+	private static void handleVengeance(Entity target, Hit hit) {
 		if (target instanceof NPC) {
 			return;
 		}
 		Player p2 = (Player) target;
 		if (p2.isVengeanceActivated() && hit.getDamage() >= 4) {
-			p2.setCastVeng(false);
+			p2.setVengeance(false);
 			p2.setNextForceTalk(new ForceTalk("Taste vengeance!"));
 			hit.getSource().applyHit(new Hit(target, (int) (hit.getDamage() * 0.75), HitLook.REGULAR_DAMAGE));
 		}
@@ -212,9 +212,9 @@ public abstract class CombatScript {
 			Player p2 = (Player) target;
 			if (hit.getLook() == HitLook.MELEE_DAMAGE) {
 				int weaponId = p2.getEquipment().getWeaponId();
-				if (p2.getPolDelay() > Utils.currentTimeMillis()) {
+				if (p2.getSoLDelay() > Utils.currentTimeMillis()) {
 					if (weaponId != 15486) {
-						p2.setPolDelay(0);
+						p2.removeSoLDelay();
 					} else {
 						p2.gfx(new Graphics(2320, 0, 100));
 						hit.setDamage((int) (hit.getDamage() * 0.5));
